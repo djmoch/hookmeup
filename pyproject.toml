@@ -1,0 +1,11 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "hookmeup"
+author = "Daniel Moch"
+author-email = "daniel@danielmoch.com"
+home-page = "https://github.com/djmoch/hookmeup"
+description-file = "README.md"
+classifiers = ["License :: OSI Approved :: MIT License"]
