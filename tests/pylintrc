@@ -11,7 +11,7 @@ ignore=CVS .git
 
 # Add files or directories matching the regex patterns to the blacklist. The
 # regex matches against base names, not paths.
-ignore-patterns=version.*
+ignore-patterns=
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
@@ -60,7 +60,7 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=missing-docstring,
+disable=unsubscriptable-object,
         print-statement,
         parameter-unpacking,
         unpacking-in-except,
@@ -238,7 +238,8 @@ generated-members=REQUEST,
                   aq_parent,
                   assert_called_once_with,
                   assert_called_once,
-                  call_count
+                  call_count,
+                  print
 
 # Tells whether missing members accessed in mixin class should be ignored. A
 # mixin class is detected if its name ends with "mixin" (case insensitive).

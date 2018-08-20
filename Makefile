@@ -44,6 +44,7 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
+	$(PIPENV) pip uninstall -y hookmeup
 
 clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
@@ -57,7 +58,7 @@ test: ## run tests quickly with the default Python
 	$(PIPENV) python -m pytest
 
 coverage: ## check code coverage quickly with the default Python
-	$(PIPENV) coverage run --source hookmeup -m pytest
+	$(PIPENV) python -m pytest
 	$(PIPENV) coverage report -m
 	$(PIPENV) coverage html
 	$(BROWSER) htmlcov/index.html
@@ -71,3 +72,9 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	$(PIPENV) flit install
+
+run: install ## run the package from site-packages
+	$(PIPENV) hookmeup install
+
+debug: install ## debug the package from site packages
+	$(PIPENV) pudb3 `pipenv --venv`/bin/hookmeup install

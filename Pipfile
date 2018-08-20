@@ -7,9 +7,11 @@ name = "pypi"
 flit = "*"
 
 [dev-packages]
-pytest = "*"
+pytest = "<3.7.0"
 pytest-cov = "*"
 pytest-pylint = "*"
+pytest-mock = "*"
+pudb = "*"
 
 [requires]
 python_version = "3.7"
