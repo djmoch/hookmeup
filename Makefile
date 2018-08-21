@@ -77,4 +77,4 @@ run: install ## run the package from site-packages
 	$(PIPENV) hookmeup install
 
 debug: install ## debug the package from site packages
-	$(PIPENV) pudb3 `pipenv --venv`/bin/hookmeup install
+	$(PIPENV) pudb3 `$(PIPENV) which hookmeup` install
