@@ -172,3 +172,73 @@ def test_adjust_pipenv_failure(mocker):
             )
     with pytest.raises(hookmeup.hookmeup.HookMeUpError):
         hookmeup.hookmeup.adjust_pipenv()
+
+def test_migrate_up(mocker):
+    """Test a nominal Django migration"""
+    completed_process = subprocess.CompletedProcess(
+            args=['git', 'diff', '--name-status'],
+            returncode=0,
+            stdout=b'\
+                    A    app1/migrations/0002_auto.py\n\
+                    A    app2/migrations/0003_test.py\n\
+                    A    other_file.py\n',
+            stderr=b''
+            )
+    mocker.patch(
+            'subprocess.run',
+            new=mocker.MagicMock(return_value=completed_process)
+            )
+
+def test_migrate_down(mocker):
+    """Test a nominal Django migration downgrade"""
+    completed_process = subprocess.CompletedProcess(
+            args=['git', 'diff', '--name-status'],
+            returncode=0,
+            stdout=b'\
+                    D    app1/migrations/0002_auto.py\n\
+                    D    app2/migrations/0003_test.py\n\
+                    A    other_file.py\n',
+            stderr=b''
+            )
+    mocker.patch(
+            'subprocess.run',
+            new=mocker.MagicMock(return_value=completed_process)
+            )
+
+def test_squashed_migrate_up(mocker):
+    """Test a Django migration upgrade with an intervening squash"""
+    completed_process = subprocess.CompletedProcess(
+            args=['git', 'diff', '--name-status'],
+            returncode=0,
+            stdout=b'\
+                    A    app1/migrations/0002_auto.py\n\
+                    A    app2/migrations/0003_test.py\n\
+                    D    app3/migrations/0001_initial.py\n\
+                    D    app3/migrations/0002_auto.py\n\
+                    A    app3/migrations/0001_squashed.py\n\
+                    A    other_file.py\n',
+            stderr=b''
+            )
+    mocker.patch(
+            'subprocess.run',
+            new=mocker.MagicMock(return_value=completed_process)
+            )
+
+def test_squashed_migrate_down(mocker):
+    """Test a Django migration downgrade with an intervening squash"""
+    completed_process = subprocess.CompletedProcess(
+            args=['git', 'diff', '--name-status'],
+            returncode=0,
+            stdout=b'\
+                    A    app1/migrations/0002_auto.py\n\
+                    A    app2/migrations/0003_test.py\n\
+                    A    app3/migrations/0001_initial.py\n\
+                    A    app3/migrations/0002_auto.py\n\
+                    D    app3/migrations/0001_squashed.py\n\
+                    A    other_file.py\n',
+            stderr=b''
+            )
+    mocker.patch(
+            'subprocess.run',
+            new=mocker.MagicMock(return_value=completed_process)
+            )
