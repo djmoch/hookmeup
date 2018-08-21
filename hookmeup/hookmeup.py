@@ -2,6 +2,7 @@
 """hookmeup module."""
 import os
 import subprocess
+from subprocess import CalledProcessError
 
 class HookMeUpError(Exception):
     """Errors raised by hookmeup"""
@@ -10,35 +11,48 @@ class HookMeUpError(Exception):
     def __str__(self):
         return "hookmeup: {}".format(self.args[0])
 
-def handle_completed_process(completed_process, msg="fatal error"):
-    """Handle return data from a call to subprocess.run"""
-    if completed_process.returncode != 0:
+class DjangoMigrator():
+    """
+    Class responsible for parsing, applying, and unapplying Django
+    migrations
+    """
+    def __init__(self):
+        pass
+
+    def migrations_changed(self):
+        """
+        Returns true if there are migrations that need to be applied
+        or unapplied
+        """
+        pass
+
+    def migrate(self):
+        """Apply/unapply any migrations as necessary"""
+        pass
+
+def call_checked_subprocess(arg_list, msg="fatal error"):
+    """Handle return data from a call to a subprocess"""
+    try:
+        return subprocess.check_output(arg_list).decode('utf-8')
+    except CalledProcessError:
         raise HookMeUpError(msg)
 
 def adjust_pipenv():
     """Adjust pipenv to match Pipfile"""
     print('Adjusting virtualenv to match Pipfile')
-    completed_process = subprocess.run(
+    call_checked_subprocess(
             ['pipenv', 'clean'],
-            check=True
-            )
-    handle_completed_process(
-            completed_process,
             'Attempt to clean pipenv failed'
             )
 
-    completed_process = subprocess.run(
+    call_checked_subprocess(
             ['pipenv', 'sync', '--dev'],
-            check=True
-            )
-    handle_completed_process(
-            completed_process,
             'Attempt to sync pipenv failed'
             )
 
 def pipfile_changed(args):
     """Test if the Pipfile has changed"""
-    completed_process = subprocess.run(
+    stdout = call_checked_subprocess(
             ['git',
              'diff',
              '--name-status',
@@ -46,19 +60,17 @@ def pipfile_changed(args):
              args['new'],
              '--',
              'Pipfile'],
-            check=True,
-            capture_output=True
-            )
-    handle_completed_process(
-            completed_process,
             'Not in a Git repository'
             )
 
-    return completed_process.stdout.decode('utf-8').startswith('M')
+    return stdout.startswith('M')
 
 def post_checkout(args):
     """Run post-checkout hook"""
+    migrator = DjangoMigrator()
     if args['branch_checkout'] == 1:
+        if migrator.migrations_changed():
+            migrator.migrate()
         if pipfile_changed(args):
             adjust_pipenv()
 
@@ -69,19 +81,13 @@ def install(args):
                 "Argument passed to 'install', but expected none"
                 )
 
-    completed_process = subprocess.run(
+    stdout = call_checked_subprocess(
             ['git', 'rev-parse', '--git-dir'],
-            check=True,
-            capture_output=True
-            )
-
-    handle_completed_process(
-            completed_process,
             'Not in a Git repository'
             )
 
     hook_path = os.path.join(
-            completed_process.stdout.decode('utf-8').strip(),
+            stdout.strip(),
             'hooks',
             'post-checkout'
             )
