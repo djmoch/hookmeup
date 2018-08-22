@@ -16,19 +16,62 @@ class DjangoMigrator():
     Class responsible for parsing, applying, and unapplying Django
     migrations
     """
-    def __init__(self):
-        pass
+    def __init__(self, args):
+        self.added_migration_apps = []
+        self.oldest_deleted = {}
+        self._migrate_command = ['pipenv',
+                                 'run',
+                                 'python',
+                                 'manage.py',
+                                 'migrate']
+        deleted_migrations = {}
+        stdout = call_checked_subprocess(
+                ['git', 'diff', '--name-status', args['old'], args['new']]
+                )
+        diff_lines = stdout.splitlines()
+        for line in diff_lines:
+            if line.find(os.path.sep + 'migrations' + os.path.sep) >= 0:
+                file_status = line[0]
+                file_path = line[1:-1].strip()
+                file_path_segments = file_path.split(os.path.sep)
+                migration_name = file_path_segments[-1].replace('.py', '')
+                app_name = file_path_segments[-3]
+                if file_status in ['D', 'M']:
+                    if app_name not in deleted_migrations:
+                        deleted_migrations[app_name] = []
+                    deleted_migrations[app_name].append(migration_name)
+                if file_status == 'A' \
+                        and app_name not in self.added_migration_apps:
+                    self.added_migration_apps.append(app_name)
+        for app_name, migrations_list in deleted_migrations.items():
+            migrations_list.sort()
+            self.oldest_deleted[app_name] = \
+                    int(migrations_list[0].split('_')[0])
 
     def migrations_changed(self):
         """
         Returns true if there are migrations that need to be applied
         or unapplied
         """
-        pass
+        return self.added_migration_apps != [] or \
+                self.oldest_deleted != {}
 
     def migrate(self):
         """Apply/unapply any migrations as necessary"""
-        pass
+        for app, oldest in self.oldest_deleted.items():
+            target_migration = format(oldest - 1, '04d')
+            if target_migration == '0000':
+                target_migration = 'zero'
+            call_checked_subprocess(
+                    self._migrate_command + [app, target_migration],
+                    'rollback migration for {} failed'.format(app)
+                    )
+
+        if self.added_migration_apps != []:
+            call_checked_subprocess(
+                    self._migrate_command + self.added_migration_apps,
+                    'migration failed'
+                    )
 
 def call_checked_subprocess(arg_list, msg="fatal error"):
     """Handle return data from a call to a subprocess"""
@@ -67,7 +110,7 @@ def pipfile_changed(args):
 
 def post_checkout(args):
     """Run post-checkout hook"""
-    migrator = DjangoMigrator()
+    migrator = DjangoMigrator(args)
     if args['branch_checkout'] == 1:
         if migrator.migrations_changed():
             migrator.migrate()

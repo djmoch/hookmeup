@@ -7,8 +7,9 @@ from subprocess import CalledProcessError
 
 import pytest
 import hookmeup
-from hookmeup.hookmeup import HookMeUpError
+from hookmeup.hookmeup import HookMeUpError, DjangoMigrator
 
+# pylint: disable=protected-access
 @pytest.fixture
 def mock_install(mocker):
     """Mock low-level API's called by install"""
@@ -85,7 +86,9 @@ def test_post_checkout(mocker):
     """Test nominal post_checkout"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'M   Pipfile\n')
+            new=mocker.MagicMock(return_value=b'M \
+                    Pipfile\nA \
+                    app1/migrations/0003_test.py')
             )
     mocker.patch('hookmeup.hookmeup.adjust_pipenv')
     hookmeup.hookmeup.post_checkout({
@@ -93,7 +96,7 @@ def test_post_checkout(mocker):
             'old': 'HEAD^',
             'new': 'HEAD'
             })
-    subprocess.check_output.assert_called_once()
+    assert subprocess.check_output.call_count == 3
     hookmeup.hookmeup.adjust_pipenv.assert_called_once()
 
 def test_post_checkout_no_changes(mocker):
@@ -108,7 +111,7 @@ def test_post_checkout_no_changes(mocker):
             'old': 'HEAD^',
             'new': 'HEAD'
             })
-    subprocess.check_output.assert_called_once()
+    assert subprocess.check_output.call_count == 2
     assert hookmeup.hookmeup.adjust_pipenv.call_count == 0
 
 def test_adjust_pipenv(mocker):
@@ -135,44 +138,63 @@ def test_migrate_up(mocker):
     """Test a nominal Django migration"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'\
-                    A    app1/migrations/0002_auto.py\n\
-                    A    app2/migrations/0003_test.py\n\
-                    A    other_file.py\n')
+            new=mocker.MagicMock(return_value=b'A\
+                    app1/migrations/0002_auto.py\nA\
+                    app2/migrations/0003_test.py\nA\
+                    other_file.py\n')
+            )
+    migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
+    assert migrator.migrations_changed() is True
+    subprocess.check_output.assert_called_once()
+    mocker.resetall()
+    migrator.migrate()
+    subprocess.check_output.assert_called_once_with(
+            migrator._migrate_command + ['app1', 'app2']
             )
 
 def test_migrate_down(mocker):
     """Test a nominal Django migration downgrade"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'\
-                    D    app1/migrations/0002_auto.py\n\
-                    D    app2/migrations/0003_test.py\n\
-                    A    other_file.py\n')
+            new=mocker.MagicMock(return_value=b'D \
+                    app1/migrations/0002_auto.py\nD \
+                    app2/migrations/0003_test.py\nA \
+                    other_file.py\n')
+            )
+    migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
+    assert migrator.migrations_changed() is True
+    subprocess.check_output.assert_called_once()
+    mocker.resetall()
+    migrator.migrate()
+    assert subprocess.check_output.call_count == 2
+    subprocess.check_output.assert_any_call(
+            migrator._migrate_command + ['app1', '0001']
+            )
+    subprocess.check_output.assert_any_call(
+            migrator._migrate_command + ['app2', '0002']
             )
 
-def test_squashed_migrate_up(mocker):
+def test__migrate_to_zero(mocker):
     """Test a Django migration upgrade with an intervening squash"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'\
-                    A    app1/migrations/0002_auto.py\n\
-                    A    app2/migrations/0003_test.py\n\
-                    D    app3/migrations/0001_initial.py\n\
-                    D    app3/migrations/0002_auto.py\n\
-                    A    app3/migrations/0001_squashed.py\n\
-                    A    other_file.py\n')
+            new=mocker.MagicMock(return_value=b'A \
+                    app1/migrations/0002_auto.py\nA \
+                    app2/migrations/0003_test.py\nD \
+                    app3/migrations/0001_initial.py\nD \
+                    app3/migrations/0002_auto.py\nA \
+                    app3/migrations/0001_squashed.py\nA \
+                    other_file.py\n')
             )
-
-def test_squashed_migrate_down(mocker):
-    """Test a Django migration downgrade with an intervening squash"""
-    mocker.patch(
-            'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'\
-                    A    app1/migrations/0002_auto.py\n\
-                    A    app2/migrations/0003_test.py\n\
-                    A    app3/migrations/0001_initial.py\n\
-                    A    app3/migrations/0002_auto.py\n\
-                    D    app3/migrations/0001_squashed.py\n\
-                    A    other_file.py\n')
+    migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
+    assert migrator.migrations_changed() is True
+    subprocess.check_output.assert_called_once()
+    mocker.resetall()
+    migrator.migrate()
+    assert subprocess.check_output.call_count == 2
+    subprocess.check_output.assert_any_call(
+            migrator._migrate_command + ['app3', 'zero']
+            )
+    subprocess.check_output.assert_any_call(
+            migrator._migrate_command + ['app1', 'app2', 'app3']
             )
