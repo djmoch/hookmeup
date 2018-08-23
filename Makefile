@@ -74,7 +74,7 @@ install: clean ## install the package to the active Python's site-packages
 	$(PIPENV) flit install
 
 run: install ## run the package from site-packages
-	$(PIPENV) hookmeup install
+	$(PIPENV) hookmeup
 
 debug: install ## debug the package from site packages
-	$(PIPENV) pudb3 `$(PIPENV) which hookmeup` install
+	$(PIPENV) pudb3 `$(PIPENV) which hookmeup`

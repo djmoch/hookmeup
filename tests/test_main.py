@@ -68,3 +68,15 @@ def test_pc_too_many_args(mock_hookmeup, mocker):
         hookmeup.main()
     assert hookmeup.hookmeup.post_checkout.call_count == 0
     assert hookmeup.hookmeup.install.call_count == 0
+
+def test_no_args(mock_hookmeup, mocker):
+    """Test hookmeup called with no arguments"""
+    mocker.patch.object(
+            sys,
+            'argv',
+            ['hookmeup']
+            )
+    with pytest.raises(SystemExit):
+        hookmeup.main()
+    hookmeup.hookmeup.post_checkout.assert_not_called()
+    hookmeup.hookmeup.install.assert_not_called()

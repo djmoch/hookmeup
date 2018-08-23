@@ -2,6 +2,7 @@
 
 """A Git hook to automate your Pipenv and Django workflows"""
 import argparse
+from argparse import Namespace
 
 from . import hookmeup
 
@@ -34,6 +35,9 @@ def main():
             help='1 for branch checkout, 0 otherwise')
     post_commit_parser.set_defaults(func=hookmeup.post_checkout)
     args = parser.parse_args()
+    if args == Namespace():
+        parser.print_help()
+        exit(1)
     func = args.func
     arg_dict = vars(args)
     del arg_dict['func']
