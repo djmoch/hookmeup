@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fd5a5de24dc062a9d5c8bfdd4adde56e660fd0f62c616dac3732592b290123b2"
+            "sha256": "dbd531a84c2641232ac42cdd4450966f9a3af2034db26189b3b0b9a6bef8e79e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -276,11 +276,27 @@
             ],
             "version": "==1.11.0"
         },
+        "tox": {
+            "hashes": [
+                "sha256:37cf240781b662fb790710c6998527e65ca6851eace84d1595ee71f7af4e85f7",
+                "sha256:eb61aa5bcce65325538686f09848f04ef679b5cd9b83cc491272099b28739600"
+            ],
+            "index": "pypi",
+            "version": "==3.2.1"
+        },
         "urwid": {
             "hashes": [
                 "sha256:644d3e3900867161a2fc9287a9762753d66bd194754679adb26aede559bcccbc"
             ],
             "version": "==2.0.1"
+        },
+        "virtualenv": {
+            "hashes": [
+                "sha256:2ce32cd126117ce2c539f0134eb89de91a8413a29baac49cbab3eb50e2026669",
+                "sha256:ca07b4c0b54e14a91af9f34d0919790b016923d157afda5efdde55c96718f752"
+            ],
+            "markers": "python_version != '3.2.*' and python_version >= '2.7' and python_version != '3.0.*' and python_version != '3.1.*'",
+            "version": "==16.0.0"
         },
         "wrapt": {
             "hashes": [

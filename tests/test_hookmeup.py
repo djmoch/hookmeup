@@ -73,7 +73,7 @@ def test_install_already_installed(mock_install, mocker):
             )
     mocker.patch('hookmeup.hookmeup.print')
     hookmeup.hookmeup.install({})
-    hookmeup.hookmeup.print.assert_called_once()
+    assert hookmeup.hookmeup.print.call_count == 1
 
 def test_error():
     """Test accessing error members"""
@@ -97,7 +97,7 @@ def test_post_checkout(mocker):
             'new': 'HEAD'
             })
     assert subprocess.check_output.call_count == 3
-    hookmeup.hookmeup.adjust_pipenv.assert_called_once()
+    assert hookmeup.hookmeup.adjust_pipenv.call_count == 1
 
 def test_post_checkout_no_changes(mocker):
     """Test nominal post_checkout"""
@@ -145,7 +145,7 @@ def test_migrate_up(mocker):
             )
     migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
-    subprocess.check_output.assert_called_once()
+    assert subprocess.check_output.call_count == 1
     mocker.resetall()
     migrator.migrate()
     subprocess.check_output.assert_called_once_with(
@@ -163,7 +163,7 @@ def test_migrate_down(mocker):
             )
     migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
-    subprocess.check_output.assert_called_once()
+    assert subprocess.check_output.call_count == 1
     mocker.resetall()
     migrator.migrate()
     assert subprocess.check_output.call_count == 2
@@ -188,7 +188,7 @@ def test__migrate_to_zero(mocker):
             )
     migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
-    subprocess.check_output.assert_called_once()
+    assert subprocess.check_output.call_count == 1
     mocker.resetall()
     migrator.migrate()
     assert subprocess.check_output.call_count == 2

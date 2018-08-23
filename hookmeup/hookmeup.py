@@ -26,7 +26,8 @@ class DjangoMigrator():
                                  'migrate']
         deleted_migrations = {}
         stdout = call_checked_subprocess(
-                ['git', 'diff', '--name-status', args['old'], args['new']]
+                ['git', 'diff', '--name-status', args['old'], args['new']],
+                'not in a Git repository'
                 )
         diff_lines = stdout.splitlines()
         for line in diff_lines:

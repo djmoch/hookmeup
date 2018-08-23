@@ -50,12 +50,16 @@ clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
+	rm -fr .tox
 
 lint: ## check style with flake8
 	$(PIPENV) pylint --rcfile tests/pylintrc hookmeup tests
 
 test: ## run tests quickly with the default Python
 	$(PIPENV) python -m pytest
+
+test-all: ## run tests on every Python version with tox
+	$(PIPENV) tox
 
 coverage: ## check code coverage quickly with the default Python
 	$(PIPENV) python -m pytest

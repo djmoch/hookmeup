@@ -241,7 +241,8 @@ generated-members=REQUEST,
                   call_count,
                   print,
                   call_args_list,
-                  assert_any_call
+                  assert_any_call,
+                  assert_not_called
 
 # Tells whether missing members accessed in mixin class should be ignored. A
 # mixin class is detected if its name ends with "mixin" (case insensitive).

@@ -17,7 +17,9 @@ def main():
             version='%(prog)s {}'.format(__version__))
     subparsers = parser.add_subparsers(
             title='subcommands',
-            description='Valid %(prog)s subcommands')
+            description='Valid %(prog)s subcommands. See more \
+                    information on a subcommand by typing hookmeup \
+                    {subcommand} {-h,--help}')
     install_parser = subparsers.add_parser(
             'install',
             description='Run inside a repository to install the hook. \

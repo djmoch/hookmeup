@@ -12,6 +12,7 @@ pytest-cov = "*"
 pytest-pylint = "*"
 pytest-mock = "*"
 pudb = "*"
+tox = "*"
 
 [requires]
 python_version = "3.7"
