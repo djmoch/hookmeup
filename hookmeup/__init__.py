@@ -14,18 +14,28 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
             '-v', action='version',
-            version='%(prog)s {}'.format(__version__))
+            version='%(prog)s {}'.format(__version__)
+            )
     subparsers = parser.add_subparsers(
             title='subcommands',
             description='Valid %(prog)s subcommands. See more \
                     information on a subcommand by typing hookmeup \
-                    {subcommand} {-h,--help}')
+                    {subcommand} {-h,--help}'
+            )
     install_parser = subparsers.add_parser(
             'install',
             description='Run inside a repository to install the hook. \
                     Fails if the current directory is not inside a Git \
-                    repository.')
+                    repository.'
+            )
     install_parser.set_defaults(func=hookmeup.install)
+    remove_parser = subparsers.add_parser(
+            'remove',
+            description="Run inside a repository to uninstall the hook. \
+                    Fails if the current directory is not inside a Git \
+                    repository."
+            )
+    remove_parser.set_defaults(func=hookmeup.remove)
     post_commit_parser = subparsers.add_parser(
             'post-checkout',
             description='Run post-checkout hook. This should normally \

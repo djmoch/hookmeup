@@ -82,6 +82,23 @@ def test_error():
     except HookMeUpError as error:
         assert str(error) == 'hookmeup: test error'
 
+def test_post_checkout_non_branch(mocker):
+    """Test post_checkout call for non-branch checkout"""
+    mocker.patch(
+            'hookmeup.hookmeup.adjust_pipenv'
+            )
+    mocker.patch.object(
+            DjangoMigrator,
+            'migrations_changed'
+            )
+    hookmeup.hookmeup.post_checkout(
+            {'old': 'old',
+             'new': 'new',
+             'branch_checkout': 0}
+            )
+    hookmeup.hookmeup.adjust_pipenv.assert_not_called()
+    DjangoMigrator.migrations_changed.assert_not_called()
+
 def test_post_checkout(mocker):
     """Test nominal post_checkout"""
     mocker.patch(
@@ -174,7 +191,7 @@ def test_migrate_down(mocker):
             migrator._migrate_command + ['app2', '0002']
             )
 
-def test__migrate_to_zero(mocker):
+def test_migrate_to_zero(mocker):
     """Test a Django migration upgrade with an intervening squash"""
     mocker.patch(
             'subprocess.check_output',
@@ -198,3 +215,102 @@ def test__migrate_to_zero(mocker):
     subprocess.check_output.assert_any_call(
             migrator._migrate_command + ['app1', 'app2', 'app3']
             )
+
+def test_remove(mocker):
+    """Test removing the hook (nominal case)"""
+    mocker.patch(
+            'subprocess.check_output',
+            new=mocker.MagicMock(return_value=b'.git\n')
+            )
+    mocker.patch(
+            'os.path.exists',
+            new=mocker.MagicMock(return_value=True)
+            )
+    mock_file = mocker.mock_open(
+            read_data='#!/bin/sh\nfoo\nhookmeup post-checkout "$@"'
+            )
+    mocker.patch('hookmeup.hookmeup.open', new=mock_file)
+    hookmeup.hookmeup.remove({})
+    assert subprocess.check_output.call_count == 1
+    assert os.path.exists.call_count == 1
+    assert mock_file.call_count == 2
+    assert mock_file().read.call_count == 1
+    mock_file().writelines.assert_called_with(['#!/bin/sh\n', 'foo\n'])
+
+def test_remove_no_repo(mocker):
+    """Test removing the hook (nominal case)"""
+    mocker.patch(
+            'subprocess.check_output',
+            new=mocker.Mock(
+                    side_effect=CalledProcessError(128, 'cmd'))
+            )
+    mocker.patch(
+            'os.path.exists',
+            new=mocker.MagicMock(return_value=False)
+            )
+    mock_file = mocker.mock_open(
+            read_data='#!/bin/sh\nfoo\nhookmeup post-checkout "$@"'
+            )
+    mocker.patch('hookmeup.hookmeup.open', new=mock_file)
+    with pytest.raises(HookMeUpError):
+        hookmeup.hookmeup.remove({})
+    assert subprocess.check_output.call_count == 1
+    assert os.path.exists.call_count == 0
+    assert mock_file.call_count == 0
+    assert mock_file().read.call_count == 0
+    assert mock_file().writelines.call_count == 0
+
+def test_remove_no_hook_file(mocker):
+    """Test remove when no hook file"""
+    mocker.patch(
+            'subprocess.check_output',
+            new=mocker.MagicMock(return_value=b'.git\n')
+            )
+    mocker.patch(
+            'os.path.exists',
+            new=mocker.MagicMock(return_value=False)
+            )
+    mock_file = mocker.mock_open(
+            read_data='#!/bin/sh\nfoo\nhookmeup post-checkout "$@"'
+            )
+    mocker.patch('hookmeup.hookmeup.open', new=mock_file)
+    mocker.patch('hookmeup.hookmeup.print')
+    hookmeup.hookmeup.remove({})
+    assert subprocess.check_output.call_count == 1
+    assert os.path.exists.call_count == 1
+    assert mock_file.call_count == 0
+    assert mock_file().read.call_count == 0
+    hookmeup.hookmeup.print.assert_called_with(
+            'hookmeup: no hook to remove'
+            )
+    assert mock_file().writelines.call_count == 0
+
+def test_remove_not_installed(mocker):
+    """Test remove when hook not installed"""
+    mocker.patch(
+            'subprocess.check_output',
+            new=mocker.MagicMock(return_value=b'.git\n')
+            )
+    mocker.patch(
+            'os.path.exists',
+            new=mocker.MagicMock(return_value=True)
+            )
+    mock_file = mocker.mock_open(
+            read_data='#!/bin/sh\nfoo'
+            )
+    mocker.patch('hookmeup.hookmeup.open', new=mock_file)
+    mocker.patch('hookmeup.hookmeup.print')
+    hookmeup.hookmeup.remove({})
+    assert subprocess.check_output.call_count == 1
+    assert os.path.exists.call_count == 1
+    assert mock_file.call_count == 1
+    assert mock_file().read.call_count == 1
+    hookmeup.hookmeup.print.assert_called_with(
+            'hookmeup: hookmeup not installed. nothing to do.'
+            )
+    assert mock_file().writelines.call_count == 0
+
+def test_remove_unexpected_arg(mocker):
+    """Test remove when hook not installed"""
+    with pytest.raises(HookMeUpError):
+        hookmeup.hookmeup.remove({'this': 'that'})

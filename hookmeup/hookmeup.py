@@ -107,12 +107,12 @@ def pipfile_changed(args):
             'Not in a Git repository'
             )
 
-    return stdout.startswith('M')
+    return stdout[0] in ['M', 'A']
 
 def post_checkout(args):
     """Run post-checkout hook"""
-    migrator = DjangoMigrator(args)
     if args['branch_checkout'] == 1:
+        migrator = DjangoMigrator(args)
         if migrator.migrations_changed():
             migrator.migrate()
         if pipfile_changed(args):
@@ -140,11 +140,50 @@ def install(args):
         with open(hook_path, 'r') as hook_file:
             already_installed = 'hookmeup' in hook_file.read()
 
-        with open(hook_path, 'a') as hook_file:
-            if already_installed:
-                print('hookmeup already installed')
-            else:
+        if already_installed:
+            print('hookmeup: already installed')
+        else:
+            print('hookmeup: installing to existing hook')
+            with open(hook_path, 'a') as hook_file:
                 hook_file.write('hookmeup post-checkout "$@"\n')
     else:
+        print('hookmeup: creating hook')
         with open(hook_path, 'w') as hook_file:
             hook_file.write('#!/bin/sh\nhookmeup post-checkout "$@"\n')
+
+def remove(args):
+    """Remove the hook from the repository"""
+    if len(args) is not 0:
+        raise HookMeUpError(
+                "Argument passed to 'remove', but expected none"
+                )
+
+    stdout = call_checked_subprocess(
+            ['git', 'rev-parse', '--git-dir'],
+            'Not in a Git repository'
+            )
+
+    hook_path = os.path.join(
+            stdout.strip(),
+            'hooks',
+            'post-checkout'
+            )
+
+    if os.path.exists(hook_path):
+        with open(hook_path, 'r') as hook_file:
+            hook_lines = hook_file.read()
+            installed = 'hookmeup' in hook_lines
+            hook_lines = hook_lines.splitlines()
+
+        if installed:
+            hook_lines = \
+                ['{}\n'.format(line)
+                 for line in hook_lines
+                 if line.find('hookmeup') == -1]
+            with open(hook_path, 'w') as hook_file:
+                hook_file.writelines(hook_lines)
+        else:
+            print('hookmeup: hookmeup not installed. nothing to do.')
+
+    else:
+        print('hookmeup: no hook to remove')
