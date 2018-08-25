@@ -8,20 +8,20 @@ A Git hook to automate your Pipenv and Django workflows
 
 ## Features
 
-- Cleans and Syncs your pipenv if there are changes to Pipfile
-- (TODO) Migrates your Django DB to it's current working state, applying
-  and unapplying migrations as necessary
+- Fires whenever you switch branches with `git checkout`
+- Cleans and Syncs your Pipenv if there are changes to `Pipfile`
+- Migrates your Django DB to it's current working state, applying and
+  unapplying migrations as necessary
 
-## Notes
+The hook detects if Pipenv and/or Django are in use in the current repo,
+so you don't need to be using both to take advantage of Hookmeup.
 
-- Nominal Django migrate case
-  - If manage.py exists
-    - `git diff --name-status` the whole branch
-    - Look for file changes in a 'migrations' path
-      - If deleted, unapply
-      - If changed, reapply (shouldn't usually happen)
-      - If added, apply
-    - For third party apps
-      - Always run to the latest migration (must be done after Pipenv
-        update)
-- Should we adjust pipenv based on Pipfile.lock instead of Pipfile?
+## Usage
+
+```
+$ pip install hookmeup
+$ cd $YOUR_PROJECT
+$ hookmeup install
+```
+
+More details are available by running `hookmeup --help`.
