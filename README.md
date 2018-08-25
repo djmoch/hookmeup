@@ -1,5 +1,7 @@
 # Hook Me Up
 
+[![Travis CI](https://travis-ci.org/djmoch/hookmeup.svg?branch=master)](https://travis-ci.org/djmoch/hookmeup)
+
 A Git hook to automate your Pipenv and Django workflows
 
 ## Requires
