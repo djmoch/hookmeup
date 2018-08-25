@@ -1,6 +1,9 @@
 # Hook Me Up
 
+![GitHub](https://img.shields.io/github/license/djmoch/hookmeup.svg)
 [![Travis CI](https://travis-ci.org/djmoch/hookmeup.svg?branch=master)](https://travis-ci.org/djmoch/hookmeup)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hookmeup.svg)
+[![PyPI](https://img.shields.io/pypi/v/hookmeup.svg)](https://pypi.org/project/hookmeup/)
 
 A Git hook to automate your Pipenv and Django workflows
 
