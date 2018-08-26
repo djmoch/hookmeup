@@ -7,9 +7,9 @@ name = "pypi"
 flit = "*"
 
 [dev-packages]
-pytest = "<3.7.0"
+pytest = "*"
 pytest-cov = "*"
-pytest-pylint = "*"
 pytest-mock = "*"
 pudb = "*"
 tox = "*"
+pylint = "*"

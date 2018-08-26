@@ -1,4 +1,4 @@
-.PHONY: clean clean-test clean-pyc clean-build help
+.PHONY: clean clean-test clean-pyc clean-build help lint coverage coverage-html release dist install run debug
 .DEFAULT_GOAL := help
 
 define BROWSER_PYSCRIPT
@@ -44,7 +44,7 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
-	$(PIPENV) pip uninstall -y hookmeup
+	pipenv run pip uninstall -y hookmeup
 
 clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
@@ -53,34 +53,37 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .tox
 
 lint: ## check style with pylint
-	$(PIPENV) pylint --rcfile tests/pylintrc hookmeup tests --disable=parse-error
+	pipenv run pylint --rcfile tests/pylintrc hookmeup tests --disable=parse-error
 
 test: ## run tests quickly with the default Python
-	$(PIPENV) python -m pytest
+	pipenv run python -m pytest
 
 test-all: ## run tests on every Python version with tox
-	$(PIPENV) tox
+	pipenv run tox
+
+test-install: ## install dependenices from Pipfile (for tox / CI builds)
+	pipenv --bare install --dev --skip-lock
 
 coverage: ## check code coverage quickly with the default Python
-	$(PIPENV) python -m pytest --cov=hookmeup --cov-config tests/coveragerc
-	$(PIPENV) coverage report -m
+	pipenv run python -m pytest --cov=hookmeup --cov-config tests/coveragerc
+	pipenv run coverage report -m
 
 coverage-html: coverage ## generate an HTML report and open in browser
-	$(PIPENV) coverage html
+	pipenv run coverage html
 	$(BROWSER) htmlcov/index.html
 
 release: dist ## package and upload a release
-	$(PIPENV) flit publish
+	pipenv run flit publish
 
-dist: clean ## builds source and wheel package
-	$(PIPENV) flit build
+dist: ## builds source and wheel package
+	pipenv run flit build
 	ls -l dist
 
-install: clean ## install the package to the active Python's site-packages
-	$(PIPENV) flit install
+install: ## install the package to the active Python's site-packages
+	pipenv run flit install
 
 run: install ## run the package from site-packages
-	$(PIPENV) hookmeup
+	pipenv run hookmeup
 
 debug: install ## debug the package from site packages
-	$(PIPENV) pudb3 `$(PIPENV) which hookmeup`
+	pipenv run pudb3 `pipenv run which hookmeup`
