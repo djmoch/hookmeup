@@ -53,17 +53,19 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .tox
 
 lint: ## check style with pylint
-	$(PIPENV) pylint --rcfile tests/pylintrc hookmeup tests
+	$(PIPENV) pylint --rcfile tests/pylintrc hookmeup tests --disable=parse-error
 
 test: ## run tests quickly with the default Python
-	-$(PIPENV) python -m pytest
+	$(PIPENV) python -m pytest
 
 test-all: ## run tests on every Python version with tox
 	$(PIPENV) tox
 
 coverage: ## check code coverage quickly with the default Python
-	-$(PIPENV) python -m pytest
+	$(PIPENV) python -m pytest --cov=hookmeup --cov-config tests/coveragerc
 	$(PIPENV) coverage report -m
+
+coverage-html: coverage ## generate an HTML report and open in browser
 	$(PIPENV) coverage html
 	$(BROWSER) htmlcov/index.html
 

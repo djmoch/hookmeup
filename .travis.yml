@@ -13,18 +13,29 @@ matrix:
       packages:
         - libgnutls-dev
 
-jobs:
-  include:
-    - python: 3.5
-    - python: 3.6
-    - <<: *xenial-mixin
-      python: 3.7
+env:
+  - PIPENV_HIDE_EMOJIS=1 PIPENV_NO_INHERIT=1
 
 install:
-  - pip install -U 'pytest<3.7.0' pytest-cov pytest-pylint pytest-mock python-coveralls
+  - pip install pipenv python-coveralls
+  - pipenv --bare install --dev --skip-lock
 
-script:
-  - python -m pytest
-
-after_success:
-  - coveralls
+jobs:
+  include:
+    - stage: test
+      script: make test
+      python: 3.5
+    - stage: test
+      script: make test
+      python: 3.6
+    - stage: test
+      script: make test
+      <<: *xenial-mixin
+      python: 3.7
+    - stage: lint
+      script: make lint
+      python: 3.6
+    - stage: coverage
+      script: make coverage
+      after_success: coveralls
+      python: 3.5
