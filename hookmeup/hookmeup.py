@@ -99,15 +99,16 @@ def pipfile_changed(args):
     stdout = call_checked_subprocess(
             ['git',
              'diff',
-             '--name-status',
+             '--name-only',
              args['old'],
              args['new'],
              '--',
-             'Pipfile'],
+             'Pipfile',
+             'Pipfile.lock'],
             'Not in a Git repository'
             )
 
-    return stdout[0] in ['M', 'A']
+    return 'Pipfile' in stdout
 
 def post_checkout(args):
     """Run post-checkout hook"""

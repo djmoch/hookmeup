@@ -120,7 +120,7 @@ def test_post_checkout_no_changes(mocker):
     """Test nominal post_checkout"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'\n')
+            new=mocker.MagicMock(return_value=b'')
             )
     mocker.patch('hookmeup.hookmeup.adjust_pipenv')
     hookmeup.hookmeup.post_checkout({
