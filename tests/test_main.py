@@ -41,7 +41,7 @@ def test_main_post_checkout(mock_hookmeup, mocker):
             )
     hookmeup.main()
     hookmeup.hookmeup.post_checkout.assert_called_once_with(
-            {'old': '1', 'new': '2', 'branch_checkout': '3'}
+            {'old': '1', 'new': '2', 'branch_checkout': 3}
             )
     assert hookmeup.hookmeup.install.call_count == 0
 

@@ -7,7 +7,7 @@ from argparse import Namespace
 from . import hookmeup
 
 __author__ = 'Daniel Moch'
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 def main():
     """Main hookmeup entrypoint"""
@@ -44,6 +44,7 @@ def main():
     post_commit_parser.add_argument('new', help='the new commit')
     post_commit_parser.add_argument(
             'branch_checkout',
+            type=int,
             help='1 for branch checkout, 0 otherwise')
     post_commit_parser.set_defaults(func=hookmeup.post_checkout)
     args = parser.parse_args()
