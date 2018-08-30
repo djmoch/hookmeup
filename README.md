@@ -31,3 +31,9 @@ $ hookmeup install
 ```
 
 More details are available by running `hookmeup --help`.
+
+## Acknowledgments
+
+hookmeup is inspired by Tim Pope's
+[hookup](https://github.com/tpope/hookup) utility for Ruby/Rails (and
+hence so is the name).
