@@ -27,7 +27,10 @@ def test_install(mock_install, mocker):
             new=mocker.MagicMock(return_value=False)
             )
     hookmeup.hookmeup.install({})
-    mock_file.assert_called_once_with('.git/hooks/post-checkout', 'w')
+    mock_file.assert_called_once_with(
+            os.path.sep.join(['.git', 'hooks', 'post-checkout']),
+            'w'
+            )
     mock_file().write.assert_called_once_with(
             '#!/bin/sh\nhookmeup post-checkout "$@"\n'
             )
@@ -43,7 +46,9 @@ def test_install_existing_hook(mock_install, mocker):
             )
     hookmeup.hookmeup.install({})
     assert mock_file.call_count == 2
-    os.path.exists.assert_called_once_with('.git/hooks/post-checkout')
+    os.path.exists.assert_called_once_with(
+        os.path.sep.join(['.git', 'hooks', 'post-checkout'])
+        )
 
 def test_install_bad_arg(mocker):
     """Test install function when arg inappropriately provided"""
@@ -101,11 +106,15 @@ def test_post_checkout_non_branch(mocker):
 
 def test_post_checkout(mocker):
     """Test nominal post_checkout"""
+    migration = bytes(
+            os.path.sep.join(['app1', 'migrations', '0003_test.py']),
+            'utf-8'
+            )
     mocker.patch(
             'subprocess.check_output',
             new=mocker.MagicMock(return_value=b'M \
-                    Pipfile\nA \
-                    app1/migrations/0003_test.py')
+                    Pipfile\nA '
+                    + migration)
             )
     mocker.patch('hookmeup.hookmeup.adjust_pipenv')
     hookmeup.hookmeup.post_checkout({
@@ -151,14 +160,24 @@ def test_adjust_pipenv_failure(mocker):
     with pytest.raises(HookMeUpError):
         hookmeup.hookmeup.adjust_pipenv()
 
+def build_diff_output(file_list):
+    lines = []
+    for diff_file in file_list:
+        lines.append(
+                diff_file[0] + '    ' + os.path.sep.join(diff_file[1:])
+                )
+    print(lines)
+    return bytes('\n'.join(lines), 'utf-8')
+
 def test_migrate_up(mocker):
     """Test a nominal Django migration"""
+    file_list = [['A', 'app1', 'migrations', '0002_auto.py'],
+                 ['A', 'app2', 'migrations', '0003_test.py'],
+                 ['A', 'other_file.py']
+                ]
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'A\
-                    app1/migrations/0002_auto.py\nA\
-                    app2/migrations/0003_test.py\nA\
-                    other_file.py\n')
+            new=mocker.MagicMock(return_value=build_diff_output(file_list))
             )
     migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
@@ -171,12 +190,13 @@ def test_migrate_up(mocker):
 
 def test_migrate_down(mocker):
     """Test a nominal Django migration downgrade"""
+    file_list = [['D', 'app1', 'migrations', '0002_auto.py'],
+                 ['D', 'app2', 'migrations', '0003_test.py'],
+                 ['A', 'other_file.py']
+                ]
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'D \
-                    app1/migrations/0002_auto.py\nD \
-                    app2/migrations/0003_test.py\nA \
-                    other_file.py\n')
+            new=mocker.MagicMock(return_value=build_diff_output(file_list))
             )
     migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
@@ -193,15 +213,16 @@ def test_migrate_down(mocker):
 
 def test_migrate_to_zero(mocker):
     """Test a Django migration upgrade with an intervening squash"""
+    file_list = [['A', 'app1', 'migrations', '0002_auto.py'],
+                 ['A', 'app2', 'migrations', '0003_test.py'],
+                 ['D', 'app3', 'migrations', '0001_initial.py'],
+                 ['D', 'app3', 'migrations', '0002_auto.py'],
+                 ['A', 'app3', 'migrations', '0001_squashed.py'],
+                 ['A', 'other_file.py']
+                ]
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'A \
-                    app1/migrations/0002_auto.py\nA \
-                    app2/migrations/0003_test.py\nD \
-                    app3/migrations/0001_initial.py\nD \
-                    app3/migrations/0002_auto.py\nA \
-                    app3/migrations/0001_squashed.py\nA \
-                    other_file.py\n')
+            new=mocker.MagicMock(return_value=build_diff_output(file_list))
             )
     migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
