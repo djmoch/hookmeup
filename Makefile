@@ -25,7 +25,9 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
-PIPENV := pipenv run
+PIPENV := pipenv
+PIPRUN := $(PIPENV) run
+PIPINST := $(PIPENV) --bare install --dev --skip-lock
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -44,7 +46,7 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
-	pipenv run pip uninstall -y hookmeup
+	$(PIPRUN) pip uninstall -y hookmeup
 
 clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
@@ -53,37 +55,37 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .tox
 
 lint: ## check style with pylint
-	pipenv run pylint hookmeup tests --disable=parse-error
+	$(PIPRUN) pylint hookmeup tests --disable=parse-error
 
 test: ## run tests quickly with the default Python
-	pipenv run python -m pytest
+	$(PIPRUN) python -m pytest
 
 test-all: ## run tests on every Python version with tox
-	pipenv run tox
+	$(PIPRUN) tox
 
 test-install: ## install dependenices from Pipfile (for tox / CI builds)
-	pipenv --bare install --dev --skip-lock
+	$(PIPINST)
 
 coverage: ## check code coverage quickly with the default Python
-	pipenv run python -m pytest --cov=hookmeup
-	pipenv run coverage report -m
+	$(PIPRUN) python -m pytest --cov=hookmeup
+	$(PIPRUN) coverage report -m
 
 coverage-html: coverage ## generate an HTML report and open in browser
-	pipenv run coverage html
+	$(PIPRUN) coverage html
 	$(BROWSER) htmlcov/index.html
 
 release: dist ## package and upload a release
-	pipenv run flit publish
+	$(PIPRUN) flit publish
 
 dist: ## builds source and wheel package
-	pipenv run flit build
+	$(PIPRUN) flit build
 	ls -l dist
 
 install: ## install the package to the active Python's site-packages
-	pipenv run flit install
+	$(PIPRUN) flit install
 
-run: install ## run the package from site-packages
-	pipenv run hookmeup
+run: ## run the package from site-packages
+	$(PIPRUN) python -m hookmeup $(cmd)
 
 debug: install ## debug the package from site packages
-	pipenv run pudb3 `pipenv run which hookmeup`
+	$(PIPRUN) pudb3 $$($(PIPRUN) which hookmeup) $(cmd)
