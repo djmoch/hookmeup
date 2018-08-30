@@ -7,7 +7,7 @@ from argparse import Namespace
 from . import hookmeup
 
 __author__ = 'Daniel Moch'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 def main():
     """Main hookmeup entrypoint"""
