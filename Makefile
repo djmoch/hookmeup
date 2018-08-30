@@ -53,7 +53,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .tox
 
 lint: ## check style with pylint
-	pipenv run pylint --rcfile tests/pylintrc hookmeup tests --disable=parse-error
+	pipenv run pylint hookmeup tests --disable=parse-error
 
 test: ## run tests quickly with the default Python
 	pipenv run python -m pytest
@@ -65,7 +65,7 @@ test-install: ## install dependenices from Pipfile (for tox / CI builds)
 	pipenv --bare install --dev --skip-lock
 
 coverage: ## check code coverage quickly with the default Python
-	pipenv run python -m pytest --cov=hookmeup --cov-config tests/coveragerc
+	pipenv run python -m pytest --cov=hookmeup
 	pipenv run coverage report -m
 
 coverage-html: coverage ## generate an HTML report and open in browser
