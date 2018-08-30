@@ -7,7 +7,7 @@ environment:
     - PYTHON: "C:\\Python37"
 
 install:
-  - "%PYTHON%\\python.exe -m pip install pyenv"
+  - "%PYTHON%\\python.exe -m pip install pipenv"
   - "%PYTHON%\\python.exe -m pipenv --bare install --dev --skip-lock"
 
 build: off
