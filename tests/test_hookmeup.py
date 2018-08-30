@@ -34,7 +34,9 @@ def test_install(mock_install, mocker):
     mock_file().write.assert_called_once_with(
             '#!/bin/sh\nhookmeup post-checkout "$@"\n'
             )
-    os.path.exists.assert_called_once_with('.git/hooks/post-checkout')
+    os.path.exists.assert_called_once_with(
+            os.path.sep.join(['.git', 'hooks', 'post-checkout'])
+            )
 
 def test_install_existing_hook(mock_install, mocker):
     """Test install function when post-checkout already exists"""
@@ -47,8 +49,8 @@ def test_install_existing_hook(mock_install, mocker):
     hookmeup.hookmeup.install({})
     assert mock_file.call_count == 2
     os.path.exists.assert_called_once_with(
-        os.path.sep.join(['.git', 'hooks', 'post-checkout'])
-        )
+            os.path.sep.join(['.git', 'hooks', 'post-checkout'])
+            )
 
 def test_install_bad_arg(mocker):
     """Test install function when arg inappropriately provided"""
