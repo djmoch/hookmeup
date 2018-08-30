@@ -82,7 +82,7 @@ dist: ## builds source and wheel package
 	ls -l dist
 
 install: ## install the package to the active Python's site-packages
-	$(PIPRUN) flit install
+	$(PIPRUN) flit install --deps=none
 
 run: ## run the package from site-packages
 	$(PIPRUN) python -m hookmeup $(cmd)
