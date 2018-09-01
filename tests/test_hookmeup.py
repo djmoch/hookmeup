@@ -80,7 +80,7 @@ def test_install_already_installed(mock_install, mocker):
             )
     mocker.patch('hookmeup.hookmeup.print')
     hookmeup.hookmeup.install({})
-    assert hookmeup.hookmeup.print.call_count == 1
+    hookmeup.hookmeup.print.assert_called_once()
 
 def test_error():
     """Test accessing error members"""
@@ -125,7 +125,7 @@ def test_post_checkout(mocker):
             'new': 'HEAD'
             })
     assert subprocess.check_output.call_count == 3
-    assert hookmeup.hookmeup.adjust_pipenv.call_count == 1
+    hookmeup.hookmeup.adjust_pipenv.assert_called_once()
 
 def test_post_checkout_no_changes(mocker):
     """Test nominal post_checkout"""
@@ -183,7 +183,7 @@ def test_migrate_up(mocker):
             )
     migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
-    assert subprocess.check_output.call_count == 1
+    subprocess.check_output.assert_called_once()
     mocker.resetall()
     migrator.migrate()
     subprocess.check_output.assert_called_once_with(
@@ -202,7 +202,7 @@ def test_migrate_down(mocker):
             )
     migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
-    assert subprocess.check_output.call_count == 1
+    subprocess.check_output.assert_called_once()
     mocker.resetall()
     migrator.migrate()
     assert subprocess.check_output.call_count == 2
@@ -228,7 +228,7 @@ def test_migrate_to_zero(mocker):
             )
     migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
-    assert subprocess.check_output.call_count == 1
+    subprocess.check_output.assert_called_once()
     mocker.resetall()
     migrator.migrate()
     assert subprocess.check_output.call_count == 2
@@ -254,10 +254,10 @@ def test_remove(mocker):
             )
     mocker.patch('hookmeup.hookmeup.open', new=mock_file)
     hookmeup.hookmeup.remove({})
-    assert subprocess.check_output.call_count == 1
-    assert os.path.exists.call_count == 1
+    subprocess.check_output.assert_called_once()
+    os.path.exists.assert_called_once()
     assert mock_file.call_count == 2
-    assert mock_file().read.call_count == 1
+    mock_file().read.assert_called_once()
     mock_file().writelines.assert_called_with(['#!/bin/sh\n', 'foo\n'])
 
 def test_remove_no_repo(mocker):
@@ -277,7 +277,7 @@ def test_remove_no_repo(mocker):
     mocker.patch('hookmeup.hookmeup.open', new=mock_file)
     with pytest.raises(HookMeUpError):
         hookmeup.hookmeup.remove({})
-    assert subprocess.check_output.call_count == 1
+    subprocess.check_output.assert_called_once()
     assert os.path.exists.call_count == 0
     assert mock_file.call_count == 0
     assert mock_file().read.call_count == 0
@@ -299,8 +299,8 @@ def test_remove_no_hook_file(mocker):
     mocker.patch('hookmeup.hookmeup.open', new=mock_file)
     mocker.patch('hookmeup.hookmeup.print')
     hookmeup.hookmeup.remove({})
-    assert subprocess.check_output.call_count == 1
-    assert os.path.exists.call_count == 1
+    subprocess.check_output.assert_called_once()
+    os.path.exists.assert_called_once()
     assert mock_file.call_count == 0
     assert mock_file().read.call_count == 0
     hookmeup.hookmeup.print.assert_called_with(
@@ -324,10 +324,10 @@ def test_remove_not_installed(mocker):
     mocker.patch('hookmeup.hookmeup.open', new=mock_file)
     mocker.patch('hookmeup.hookmeup.print')
     hookmeup.hookmeup.remove({})
-    assert subprocess.check_output.call_count == 1
-    assert os.path.exists.call_count == 1
-    assert mock_file.call_count == 1
-    assert mock_file().read.call_count == 1
+    subprocess.check_output.assert_called_once()
+    os.path.exists.assert_called_once()
+    mock_file.assert_called_once()
+    mock_file().read.assert_called_once()
     hookmeup.hookmeup.print.assert_called_with(
             'hookmeup: hookmeup not installed. nothing to do.'
             )

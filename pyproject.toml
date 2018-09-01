@@ -13,15 +13,10 @@ classifiers = ["License :: OSI Approved :: MIT License",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Topic :: Software Development :: Version Control :: Git"]
-requires-python=">=3.5"
 
 [tool.flit.metadata.requires-extra]
-test = ['pytest', 'pytest-cov', 'pytest-mock']
-dev = ['tox', 'pylint']
+dev = ['pipenv']
 
 [tool.flit.scripts]
 hookmeup = "hookmeup:main"
