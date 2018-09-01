@@ -1,7 +1,8 @@
 # Hook Me Up
 
 ![GitHub](https://img.shields.io/github/license/djmoch/hookmeup.svg)
-[![Travis CI](https://travis-ci.org/djmoch/hookmeup.svg?branch=master)](https://travis-ci.org/djmoch/hookmeup)
+[![Travis (.com)](https://img.shields.io/travis/com/djmoch/hookmeup.svg?logo=travis)](https://travis-ci.com/djmoch/hookmeup)
+[![AppVeyor](https://img.shields.io/appveyor/ci/djmoch/hookmeup.svg?logo=appveyor)](https://ci.appveyor.com/project/djmoch/hookmeup)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hookmeup.svg)
 [![PyPI](https://img.shields.io/pypi/v/hookmeup.svg)](https://pypi.org/project/hookmeup/)
 [![Coverage Status](https://coveralls.io/repos/github/djmoch/hookmeup/badge.svg?branch=master)](https://coveralls.io/github/djmoch/hookmeup?branch=master)
