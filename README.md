@@ -10,8 +10,7 @@ A Git hook to automate your Pipenv and Django workflows
 
 ## Requirements
 
-- Any version of Python
-- Python 3 is required for development due to the Flit requirement
+- Python 3
 
 ## Features
 
