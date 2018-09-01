@@ -5,6 +5,7 @@ import argparse
 from argparse import Namespace
 
 from . import hookmeup
+from .hookmeup import HookMeUpError
 
 __author__ = 'Daniel Moch'
 __version__ = '0.1.2'
@@ -54,4 +55,7 @@ def main():
     func = args.func
     arg_dict = vars(args)
     del arg_dict['func']
-    func(arg_dict)
+    try:
+        func(arg_dict)
+    except HookMeUpError as ex:
+        print(str(ex))

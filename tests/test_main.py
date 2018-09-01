@@ -5,6 +5,7 @@ import sys
 
 import pytest
 import hookmeup
+from hookmeup.hookmeup import HookMeUpError
 
 @pytest.fixture
 def mock_hookmeup(mocker):
@@ -80,3 +81,15 @@ def test_no_args(mock_hookmeup, mocker):
         hookmeup.main()
     hookmeup.hookmeup.post_checkout.assert_not_called()
     hookmeup.hookmeup.install.assert_not_called()
+
+def test_error(mocker):
+    """Test case where hookmeup throws an exception"""
+    mocker.patch(
+            'hookmeup.hookmeup.install',
+            new=mocker.MagicMock(side_effect=HookMeUpError('test error'))
+            )
+    mocker.patch.object(sys, 'argv', ['hookmeup', 'install'])
+    mocker.patch('hookmeup.print')
+    hookmeup.main()
+    assert hookmeup.hookmeup.install.call_count == 1
+    hookmeup.print.called_with('hookmeup: test error')
