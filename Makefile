@@ -68,7 +68,6 @@ test-install: ## install dependenices from Pipfile (for tox / CI builds)
 
 coverage: ## check code coverage quickly with the default Python
 	$(PIPRUN) python -m pytest --cov=hookmeup
-	$(PIPRUN) coverage report -m
 
 coverage-html: coverage ## generate an HTML report and open in browser
 	$(PIPRUN) coverage html
