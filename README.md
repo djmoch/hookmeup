@@ -18,7 +18,8 @@ A Git hook to automate your Pipenv and Django workflows
 - Fires whenever you switch branches with `git checkout`, or whenever
   you run `git pull`, or basically any time Git checks files out into
   your worktree
-- Cleans and Syncs your Pipenv if there are changes to `Pipfile`
+- Cleans and Syncs your Pipenv if there are changes to `Pipfile` or
+  `Pipfile.lock`
 - Migrates your Django DB to it's current working state, applying and
   unapplying migrations as necessary
 
