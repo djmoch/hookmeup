@@ -8,7 +8,7 @@ from . import hookmeup
 from .hookmeup import HookMeUpError
 
 __author__ = 'Daniel Moch'
-__version__ = '0.2.0'
+__version__ = '0.2.0.dev0'
 
 def main():
     """Main hookmeup entrypoint"""
@@ -59,3 +59,4 @@ def main():
         func(arg_dict)
     except HookMeUpError as ex:
         print(str(ex))
+        exit(ex.EXIT_CODE)

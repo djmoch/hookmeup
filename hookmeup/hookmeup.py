@@ -4,12 +4,18 @@ import os
 import subprocess
 from subprocess import CalledProcessError
 
+FORMAT_STRING = 'hookmeup: {}'
+
+def print_msg(msg):
+    """Print a formatted message to stdout"""
+    print(FORMAT_STRING.format(msg))
+
 class HookMeUpError(Exception):
     """Errors raised by hookmeup"""
     EXIT_CODE = 1
 
     def __str__(self):
-        return "hookmeup: {}".format(self.args[0])
+        return FORMAT_STRING.format(self.args[0])
 
 class DjangoMigrator():
     """
@@ -83,7 +89,7 @@ def call_checked_subprocess(arg_list, msg="fatal error"):
 
 def adjust_pipenv():
     """Adjust pipenv to match Pipfile"""
-    print('Adjusting virtualenv to match Pipfile')
+    print_msg('Adjusting virtualenv to match Pipfile')
     call_checked_subprocess(
             ['pipenv', 'clean'],
             'Attempt to clean pipenv failed'
@@ -142,13 +148,13 @@ def install(args):
             already_installed = 'hookmeup' in hook_file.read()
 
         if already_installed:
-            print('hookmeup: already installed')
+            print_msg('already installed')
         else:
-            print('hookmeup: installing to existing hook')
+            print_msg('installing to existing hook')
             with open(hook_path, 'a') as hook_file:
                 hook_file.write('hookmeup post-checkout "$@"\n')
     else:
-        print('hookmeup: creating hook')
+        print_msg('creating hook')
         with open(hook_path, 'w') as hook_file:
             hook_file.write('#!/bin/sh\nhookmeup post-checkout "$@"\n')
 
@@ -184,7 +190,7 @@ def remove(args):
             with open(hook_path, 'w') as hook_file:
                 hook_file.writelines(hook_lines)
         else:
-            print('hookmeup: hookmeup not installed. nothing to do.')
+            print_msg('hookmeup not installed. nothing to do.')
 
     else:
-        print('hookmeup: no hook to remove')
+        print_msg('no hook to remove')

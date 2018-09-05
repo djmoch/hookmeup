@@ -90,6 +90,7 @@ def test_error(mocker):
             )
     mocker.patch.object(sys, 'argv', ['hookmeup', 'install'])
     mocker.patch('hookmeup.print')
-    hookmeup.main()
+    with pytest.raises(SystemExit):
+        hookmeup.main()
     hookmeup.hookmeup.install.assert_called_once()
     hookmeup.print.called_with('hookmeup: test error')
