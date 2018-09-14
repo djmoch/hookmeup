@@ -6,7 +6,7 @@ from subprocess import CalledProcessError
 
 FORMAT_STRING = 'hookmeup: {}'
 
-def print_msg(msg):
+def _print_msg(msg):
     """Print a formatted message to stdout"""
     print(FORMAT_STRING.format(msg))
 
@@ -17,7 +17,7 @@ class HookMeUpError(Exception):
     def __str__(self):
         return FORMAT_STRING.format(self.args[0])
 
-class DjangoMigrator():
+class _DjangoMigrator():
     """
     Class responsible for parsing, applying, and unapplying Django
     migrations
@@ -31,7 +31,7 @@ class DjangoMigrator():
                                  'manage.py',
                                  'migrate']
         deleted_migrations = {}
-        stdout = call_checked_subprocess(
+        stdout = _call_checked_subprocess(
                 ['git', 'diff', '--name-status', args['old'], args['new']],
                 'not in a Git repository'
                 )
@@ -69,40 +69,40 @@ class DjangoMigrator():
             target_migration = format(oldest - 1, '04d')
             if target_migration == '0000':
                 target_migration = 'zero'
-            call_checked_subprocess(
+            _call_checked_subprocess(
                     self._migrate_command + [app, target_migration],
                     'rollback migration for {} failed'.format(app)
                     )
 
         if self.added_migration_apps != []:
-            call_checked_subprocess(
+            _call_checked_subprocess(
                     self._migrate_command + self.added_migration_apps,
                     'migration failed'
                     )
 
-def call_checked_subprocess(arg_list, msg="fatal error"):
+def _call_checked_subprocess(arg_list, msg="fatal error"):
     """Handle return data from a call to a subprocess"""
     try:
         return subprocess.check_output(arg_list, text=True)
     except CalledProcessError:
         raise HookMeUpError(msg)
 
-def adjust_pipenv():
+def _adjust_pipenv():
     """Adjust pipenv to match Pipfile"""
-    print_msg('Adjusting virtualenv to match Pipfile')
-    call_checked_subprocess(
+    _print_msg('Adjusting virtualenv to match Pipfile')
+    _call_checked_subprocess(
             ['pipenv', 'clean'],
             'Attempt to clean pipenv failed'
             )
 
-    call_checked_subprocess(
+    _call_checked_subprocess(
             ['pipenv', 'sync', '--dev'],
             'Attempt to sync pipenv failed'
             )
 
-def pipfile_changed(args):
+def _pipfile_changed(args):
     """Test if the Pipfile has changed"""
-    stdout = call_checked_subprocess(
+    stdout = _call_checked_subprocess(
             ['git',
              'diff',
              '--name-only',
@@ -114,16 +114,16 @@ def pipfile_changed(args):
             'Not in a Git repository'
             )
 
-    return 'Pipfile' in stdout
+    return 'Pipfile' in str(stdout)
 
 def post_checkout(args):
     """Run post-checkout hook"""
     if args['branch_checkout'] == 1:
-        migrator = DjangoMigrator(args)
+        migrator = _DjangoMigrator(args)
         if migrator.migrations_changed():
             migrator.migrate()
-        if pipfile_changed(args):
-            adjust_pipenv()
+        if _pipfile_changed(args):
+            _adjust_pipenv()
 
 def install(args):
     """Install hook into repository"""
@@ -132,7 +132,7 @@ def install(args):
                 "Argument passed to 'install', but expected none"
                 )
 
-    stdout = call_checked_subprocess(
+    stdout = _call_checked_subprocess(
             ['git', 'rev-parse', '--git-dir'],
             'Not in a Git repository'
             )
@@ -148,13 +148,13 @@ def install(args):
             already_installed = 'hookmeup' in hook_file.read()
 
         if already_installed:
-            print_msg('already installed')
+            _print_msg('already installed')
         else:
-            print_msg('installing to existing hook')
+            _print_msg('installing to existing hook')
             with open(hook_path, 'a') as hook_file:
                 hook_file.write('hookmeup post-checkout "$@"\n')
     else:
-        print_msg('creating hook')
+        _print_msg('creating hook')
         with open(hook_path, 'w') as hook_file:
             hook_file.write('#!/bin/sh\nhookmeup post-checkout "$@"\n')
 
@@ -165,7 +165,7 @@ def remove(args):
                 "Argument passed to 'remove', but expected none"
                 )
 
-    stdout = call_checked_subprocess(
+    stdout = _call_checked_subprocess(
             ['git', 'rev-parse', '--git-dir'],
             'Not in a Git repository'
             )
@@ -190,7 +190,7 @@ def remove(args):
             with open(hook_path, 'w') as hook_file:
                 hook_file.writelines(hook_lines)
         else:
-            print_msg('hookmeup not installed. nothing to do.')
+            _print_msg('hookmeup not installed. nothing to do.')
 
     else:
-        print_msg('no hook to remove')
+        _print_msg('no hook to remove')

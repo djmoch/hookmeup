@@ -7,7 +7,7 @@ from subprocess import CalledProcessError
 
 import pytest
 import hookmeup
-from hookmeup.hookmeup import HookMeUpError, DjangoMigrator
+from hookmeup.hookmeup import HookMeUpError, _DjangoMigrator
 
 # pylint: disable=protected-access
 @pytest.fixture
@@ -92,10 +92,10 @@ def test_error():
 def test_post_checkout_non_branch(mocker):
     """Test post_checkout call for non-branch checkout"""
     mocker.patch(
-            'hookmeup.hookmeup.adjust_pipenv'
+            'hookmeup.hookmeup._adjust_pipenv'
             )
     mocker.patch.object(
-            DjangoMigrator,
+            _DjangoMigrator,
             'migrations_changed'
             )
     hookmeup.hookmeup.post_checkout(
@@ -103,8 +103,8 @@ def test_post_checkout_non_branch(mocker):
              'new': 'new',
              'branch_checkout': 0}
             )
-    hookmeup.hookmeup.adjust_pipenv.assert_not_called()
-    DjangoMigrator.migrations_changed.assert_not_called()
+    hookmeup.hookmeup._adjust_pipenv.assert_not_called()
+    _DjangoMigrator.migrations_changed.assert_not_called()
 
 def test_post_checkout(mocker):
     """Test nominal post_checkout"""
@@ -115,14 +115,14 @@ def test_post_checkout(mocker):
                     Pipfile\nA '
                     + migration)
             )
-    mocker.patch('hookmeup.hookmeup.adjust_pipenv')
+    mocker.patch('hookmeup.hookmeup._adjust_pipenv')
     hookmeup.hookmeup.post_checkout({
             'branch_checkout': 1,
             'old': 'HEAD^',
             'new': 'HEAD'
             })
     assert subprocess.check_output.call_count == 3
-    hookmeup.hookmeup.adjust_pipenv.assert_called_once()
+    hookmeup.hookmeup._adjust_pipenv.assert_called_once()
 
 def test_post_checkout_no_changes(mocker):
     """Test nominal post_checkout"""
@@ -130,26 +130,26 @@ def test_post_checkout_no_changes(mocker):
             'subprocess.check_output',
             new=mocker.MagicMock(return_value='')
             )
-    mocker.patch('hookmeup.hookmeup.adjust_pipenv')
+    mocker.patch('hookmeup.hookmeup._adjust_pipenv')
     hookmeup.hookmeup.post_checkout({
             'branch_checkout': 1,
             'old': 'HEAD^',
             'new': 'HEAD'
             })
     assert subprocess.check_output.call_count == 2
-    assert hookmeup.hookmeup.adjust_pipenv.call_count == 0
+    assert hookmeup.hookmeup._adjust_pipenv.call_count == 0
 
-def test_adjust_pipenv(mocker):
-    """Test call to adjust_pipenv"""
+def test__adjust_pipenv(mocker):
+    """Test call to _adjust_pipenv"""
     mocker.patch(
             'subprocess.check_output',
             new=mocker.MagicMock(return_value='.git\n')
             )
-    hookmeup.hookmeup.adjust_pipenv()
+    hookmeup.hookmeup._adjust_pipenv()
     assert subprocess.check_output.call_count == 2
 
-def test_adjust_pipenv_failure(mocker):
-    """Test adjust_pipenv with failed subprocess call"""
+def test__adjust_pipenv_failure(mocker):
+    """Test _adjust_pipenv with failed subprocess call"""
     mocker.patch(
             'subprocess.check_output',
             new=mocker.Mock(
@@ -157,7 +157,7 @@ def test_adjust_pipenv_failure(mocker):
                     )
             )
     with pytest.raises(HookMeUpError):
-        hookmeup.hookmeup.adjust_pipenv()
+        hookmeup.hookmeup._adjust_pipenv()
 
 def build_diff_output(file_list):
     lines = []
@@ -177,7 +177,7 @@ def test_migrate_up(mocker):
             'subprocess.check_output',
             new=mocker.MagicMock(return_value=build_diff_output(file_list))
             )
-    migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
+    migrator = _DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
     subprocess.check_output.assert_called_once()
     mocker.resetall()
@@ -196,7 +196,7 @@ def test_migrate_down(mocker):
             'subprocess.check_output',
             new=mocker.MagicMock(return_value=build_diff_output(file_list))
             )
-    migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
+    migrator = _DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
     subprocess.check_output.assert_called_once()
     mocker.resetall()
@@ -222,7 +222,7 @@ def test_migrate_to_zero(mocker):
             'subprocess.check_output',
             new=mocker.MagicMock(return_value=build_diff_output(file_list))
             )
-    migrator = DjangoMigrator({'old': 'test', 'new': 'test2'})
+    migrator = _DjangoMigrator({'old': 'test', 'new': 'test2'})
     assert migrator.migrations_changed() is True
     subprocess.check_output.assert_called_once()
     mocker.resetall()
