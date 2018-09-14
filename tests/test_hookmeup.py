@@ -15,7 +15,7 @@ def mock_install(mocker):
     """Mock low-level API's called by install"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'.git')
+            new=mocker.MagicMock(return_value='.git')
             )
 
 def test_install(mock_install, mocker):
@@ -108,13 +108,10 @@ def test_post_checkout_non_branch(mocker):
 
 def test_post_checkout(mocker):
     """Test nominal post_checkout"""
-    migration = bytes(
-            os.path.sep.join(['app1', 'migrations', '0003_test.py']),
-            'utf-8'
-            )
+    migration = os.path.sep.join(['app1', 'migrations', '0003_test.py'])
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'M \
+            new=mocker.MagicMock(return_value='M \
                     Pipfile\nA '
                     + migration)
             )
@@ -131,7 +128,7 @@ def test_post_checkout_no_changes(mocker):
     """Test nominal post_checkout"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'')
+            new=mocker.MagicMock(return_value='')
             )
     mocker.patch('hookmeup.hookmeup.adjust_pipenv')
     hookmeup.hookmeup.post_checkout({
@@ -146,7 +143,7 @@ def test_adjust_pipenv(mocker):
     """Test call to adjust_pipenv"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'.git\n')
+            new=mocker.MagicMock(return_value='.git\n')
             )
     hookmeup.hookmeup.adjust_pipenv()
     assert subprocess.check_output.call_count == 2
@@ -168,8 +165,7 @@ def build_diff_output(file_list):
         lines.append(
                 diff_file[0] + '    ' + os.path.sep.join(diff_file[1:])
                 )
-    print(lines)
-    return bytes('\n'.join(lines), 'utf-8')
+    return '\n'.join(lines)
 
 def test_migrate_up(mocker):
     """Test a nominal Django migration"""
@@ -187,7 +183,7 @@ def test_migrate_up(mocker):
     mocker.resetall()
     migrator.migrate()
     subprocess.check_output.assert_called_once_with(
-            migrator._migrate_command + ['app1', 'app2']
+            migrator._migrate_command + ['app1', 'app2'], text=True
             )
 
 def test_migrate_down(mocker):
@@ -207,10 +203,10 @@ def test_migrate_down(mocker):
     migrator.migrate()
     assert subprocess.check_output.call_count == 2
     subprocess.check_output.assert_any_call(
-            migrator._migrate_command + ['app1', '0001']
+            migrator._migrate_command + ['app1', '0001'], text=True
             )
     subprocess.check_output.assert_any_call(
-            migrator._migrate_command + ['app2', '0002']
+            migrator._migrate_command + ['app2', '0002'], text=True
             )
 
 def test_migrate_to_zero(mocker):
@@ -233,17 +229,17 @@ def test_migrate_to_zero(mocker):
     migrator.migrate()
     assert subprocess.check_output.call_count == 2
     subprocess.check_output.assert_any_call(
-            migrator._migrate_command + ['app3', 'zero']
+            migrator._migrate_command + ['app3', 'zero'], text = True
             )
     subprocess.check_output.assert_any_call(
-            migrator._migrate_command + ['app1', 'app2', 'app3']
+            migrator._migrate_command + ['app1', 'app2', 'app3'], text = True
             )
 
 def test_remove(mocker):
     """Test removing the hook (nominal case)"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'.git\n')
+            new=mocker.MagicMock(return_value='.git\n')
             )
     mocker.patch(
             'os.path.exists',
@@ -287,7 +283,7 @@ def test_remove_no_hook_file(mocker):
     """Test remove when no hook file"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'.git\n')
+            new=mocker.MagicMock(return_value='.git\n')
             )
     mocker.patch(
             'os.path.exists',
@@ -312,7 +308,7 @@ def test_remove_not_installed(mocker):
     """Test remove when hook not installed"""
     mocker.patch(
             'subprocess.check_output',
-            new=mocker.MagicMock(return_value=b'.git\n')
+            new=mocker.MagicMock(return_value='.git\n')
             )
     mocker.patch(
             'os.path.exists',

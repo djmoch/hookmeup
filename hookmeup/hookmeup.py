@@ -83,7 +83,7 @@ class DjangoMigrator():
 def call_checked_subprocess(arg_list, msg="fatal error"):
     """Handle return data from a call to a subprocess"""
     try:
-        return subprocess.check_output(arg_list).decode('utf-8')
+        return subprocess.check_output(arg_list, text=True)
     except CalledProcessError:
         raise HookMeUpError(msg)
 
