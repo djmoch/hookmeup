@@ -20,7 +20,7 @@ def main():
     subparsers = parser.add_subparsers(
             title='subcommands',
             description='Valid %(prog)s subcommands. See more \
-                    information on a subcommand by typing hookmeup \
+                    information on a subcommand by typing %(prog)s \
                     {subcommand} {-h,--help}'
             )
     install_parser = subparsers.add_parser(
