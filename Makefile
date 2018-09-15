@@ -24,13 +24,15 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
-BROWSER := python -c "$$BROWSER_PYSCRIPT"
+PYTHON := python
+PIP := pip
+BROWSER := $(PYTHON) -c "$$BROWSER_PYSCRIPT"
 PIPENV := pipenv
 PIPRUN := $(PIPENV) run
 PIPINST := $(PIPENV) --bare install --dev --skip-lock
 
 help:
-	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
+	@$(PYTHON) -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
@@ -58,16 +60,17 @@ lint: ## check style with pylint
 	$(PIPRUN) pylint hookmeup tests --disable=parse-error
 
 test: ## run tests quickly with the default Python
-	$(PIPRUN) python -m pytest
+	$(PIPRUN) $(PYTHON) -m pytest
 
 test-all: ## run tests on every Python version with tox
 	$(PIPRUN) tox
 
 test-install: ## install dependenices from Pipfile (for tox / CI builds)
+	$(PIP) install --upgrade pip pipenv
 	$(PIPINST)
 
 coverage: ## check code coverage quickly with the default Python
-	$(PIPRUN) python -m pytest --cov=hookmeup
+	$(PIPRUN) $(PYTHON) -m pytest --cov=hookmeup
 
 coverage-html: coverage ## generate an HTML report and open in browser
 	$(PIPRUN) coverage html
@@ -84,7 +87,7 @@ install: ## install the package to the active Python's site-packages
 	$(PIPRUN) flit install --deps=none
 
 run: ## run the package from site-packages
-	$(PIPRUN) python -m hookmeup $(cmd)
+	$(PIPRUN) $(PYTHON) -m hookmeup $(cmd)
 
 debug: install ## debug the package from site packages
 	$(PIPRUN) pudb3 $$($(PIPRUN) which hookmeup) $(cmd)

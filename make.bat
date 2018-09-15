@@ -23,9 +23,16 @@ for line in sys.stdin:^
 
 		print("%-20s %s" % (target, help))^
 
-if "%PYTHON%"=="" set PYTHON=python
-set
-set PIPENV=%PYTHON% -m pipenv
+rem PYTHON defined externally means something different from the way
+rem it's used internally, so redefine it
+if "%PYTHON%"=="" (
+    set PYTHON=python
+) else (
+    set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+    set PYTHON=python
+)
+set PIP=pip
+set PIPENV=pipenv
 set PIPRUN=%PIPENV% run
 set PIPINST=%PIPENV% --bare install --dev --skip-lock
 set BROWSER=%PYTHON% -c %BROWSER_PYSCRIPT%
@@ -80,6 +87,7 @@ if "%1" == "test-all" (
 
 if "%1" == "test-install" (
     @echo on
+    %PIP% install --upgrade pip pipenv
     %PIPINST%
     @echo off
     goto :end
