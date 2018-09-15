@@ -1,4 +1,5 @@
 @echo off
+set
 set BROWSER_PYSCRIPT=import os, webbrowser, sys^
 
 try:^
