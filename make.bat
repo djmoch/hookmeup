@@ -28,7 +28,7 @@ rem it's used internally, so redefine it
 if "%PYTHON%"=="" (
     set PYTHON=python
 ) else (
-    set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+    set "PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
     set PYTHON=python
 )
 set PIP=pip
