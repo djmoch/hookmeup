@@ -36,7 +36,7 @@ set PIPENV=pipenv
 set PIPRUN=%PIPENV% run
 set PIPINST=%PIPENV% --bare install --dev --skip-lock
 set BROWSER=%PYTHON% -c %BROWSER_PYSCRIPT%
-
+set
 if "%1" == "help" (
     %PYTHON% -c "%PRINT_HELP_PYSCRIPT%" < %~f0
     goto :end
