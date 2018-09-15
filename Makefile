@@ -66,7 +66,7 @@ test-all: ## run tests on every Python version with tox
 	$(PIPRUN) tox
 
 test-install: ## install dependenices from Pipfile (for tox / CI builds)
-	$(PIP) install --upgrade pip pipenv
+	$(PYTHON) -m $(PIP) install --upgrade pip pipenv
 	$(PIPINST)
 
 coverage: ## check code coverage quickly with the default Python

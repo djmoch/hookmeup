@@ -31,7 +31,6 @@ if "%PYTHON%"=="" (
     set "PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
     set PYTHON=python
 )
-set PIP=pip
 set PIPENV=pipenv
 set PIPRUN=%PIPENV% run
 set PIPINST=%PIPENV% --bare install --dev --skip-lock
@@ -87,7 +86,7 @@ if "%1" == "test-all" (
 
 if "%1" == "test-install" (
     @echo on
-    %PIP% install --upgrade pip pipenv
+    %PYTHON% -m %PIP% install --upgrade pip pipenv
     %PIPINST%
     @echo off
     goto :end
