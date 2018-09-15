@@ -1,5 +1,4 @@
 @echo off
-set
 set BROWSER_PYSCRIPT=import os, webbrowser, sys^
 
 try:^
@@ -27,6 +26,7 @@ for line in sys.stdin:^
 if "%PYTHON%" == "" (
     set PYTHON=python
 )
+set
 set PIPENV=%PYTHON% -m pipenv
 set PIPRUN=%PIPENV% run
 set PIPINST=%PIPENV% --bare install --dev --skip-lock
