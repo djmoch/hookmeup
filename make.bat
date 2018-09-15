@@ -23,9 +23,7 @@ for line in sys.stdin:^
 
 		print("%-20s %s" % (target, help))^
 
-if "%PYTHON%" == "" (
-    set PYTHON=python
-)
+if "%PYTHON%"=="" set PYTHON=python
 set
 set PIPENV=%PYTHON% -m pipenv
 set PIPRUN=%PIPENV% run

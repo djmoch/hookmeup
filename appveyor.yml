@@ -9,7 +9,6 @@ environment:
 
 install:
   - "%PYTHON% -m pip install pipenv"
-  - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "make test-install"
 
 build: off
