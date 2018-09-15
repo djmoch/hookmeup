@@ -26,7 +26,7 @@ for line in sys.stdin:^
 if "%PYTHON%" == "" (
     set PYTHON=python
 )
-set PIPENV=python -m pipenv
+set PIPENV=%PYTHON% -m pipenv
 set PIPRUN=%PIPENV% run
 set PIPINST=%PIPENV% --bare install --dev --skip-lock
 set BROWSER=%PYTHON% -c %BROWSER_PYSCRIPT%
