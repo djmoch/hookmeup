@@ -1,4 +1,5 @@
 @echo off
+setlocal ENABLEDELAYEDEXPANSION
 set BROWSER_PYSCRIPT=import os, webbrowser, sys^
 
 try:^
@@ -20,7 +21,7 @@ for line in sys.stdin:^
 
 		target, help = match.groups()^
 
-		print("%-20s %s" % (target, help))
+		print("%%-20s %%s" %% (target, help))
 
 if "%PYTHON%"=="" (
     set PYTHON=python
@@ -33,57 +34,57 @@ set PIP=pip
 set PIPENV=pipenv
 set PIPRUN=%PIPENV% run
 set PIPINST=%PIPENV% --bare install --dev --skip-lock
-set BROWSER=%PYTHON% -c %BROWSER_PYSCRIPT%
-set
-if "%1" == "help" (
-    %PYTHON% -c "%PRINT_HELP_PYSCRIPT%" < %~f0
+set BROWSER=%PYTHON% -c !BROWSER_PYSCRIPT!
+
+if "%1"=="help" (
+    %PYTHON% -c "!PRINT_HELP_PYSCRIPT!" < %~f0
     goto :end
 )
 
-if "%1" == "clean" (
+if "%1"=="clean" (
     call :cleanbuild
     call :cleanpyc
     call :cleantest
     goto :end
 )
 
-if "%1" == "cleanbuild" (
+if "%1"=="cleanbuild" (
     call :cleanbuild
     goto :end
 )
 
-if "%1" == "cleanpyc" (
+if "%1"=="cleanpyc" (
     call :cleanpyc
     goto :end
 )
 
-if "%1" == "cleantest" (
+if "%1"=="cleantest" (
     call :cleantest
     goto :end
 )
 
-if "%1" == "lint" (
+if "%1"=="lint" (
     @echo on
     %PIPRUN% pylint hookmeup tests --disable=parse-error
     @echo off
     goto :end
 )
  
-if "%1" == "test" (
+if "%1"=="test" (
     @echo on
     %PIPRUN% %PYTHON% -m pytest
     @echo off
     goto :end
 )
 
-if "%1" == "test-all" (
+if "%1"=="test-all" (
     @echo on
     %PIPRUN% tox
     @echo off
     goto :end
 )
 
-if "%1" == "test-install" (
+if "%1"=="test-install" (
     @echo on
     %PYTHON% -m %PIP% install --upgrade %PIP% %PIPENV% python-coveralls
     %PIPINST%
@@ -91,14 +92,14 @@ if "%1" == "test-install" (
     goto :end
 )
 
-if "%1" == "coverage" (
+if "%1"=="coverage" (
     @echo on
     %PIPRUN% %PYTHON% -m pytest --cov=hookmeup
     @echo off
     goto :end
 )
 
-if "%1" == "coverage-html" (
+if "%1"=="coverage-html" (
     @echo on
     %PIPRUN% %PYTHON% -m pytest --cov=hookmeup
     %PIPRUN% coverage html
@@ -107,7 +108,7 @@ if "%1" == "coverage-html" (
     goto :end
 )
 
-if "%1" == "release" (
+if "%1"=="release" (
     @echo on
     %PIPRUN% flit build
     dir dist
@@ -116,7 +117,7 @@ if "%1" == "release" (
     goto :end
 )
 
-if "%1" == "dist" (
+if "%1"=="dist" (
     @echo on
     %PIPRUN% flit build
     dir dist
@@ -124,21 +125,21 @@ if "%1" == "dist" (
     goto :end
 )
 
-if "%1" == "install" (
+if "%1"=="install" (
     @echo on
     %PIPRUN% flit install --deps=none
     @echo off
     goto :end
 )
 
-if "%1" == "run" (
+if "%1"=="run" (
     @echo on
     %PIPRUN% %PYTHON% -m hookmeup %cmd%
     @echo off
     goto :end
 )
 
-if "%1" == "debug" (
+if "%1"=="debug" (
     @echo on
     %PIPRUN% flit install --deps=none
     %PIPRUN% pudb3 hookmeup %cmd%
