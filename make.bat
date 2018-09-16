@@ -9,7 +9,7 @@ except:^
 
 	from urllib.request import pathname2url^
 
-webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))^
+webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
 
 set PRINT_HELP_PYSCRIPT=import re, sys^
 
@@ -21,22 +21,21 @@ for line in sys.stdin:^
 
 		target, help = match.groups()^
 
-		print("%-20s %s" % (target, help))^
+		print("%-20s %s" % (target, help))
 
-rem PYTHON defined externally means something different from the way
-rem it's used internally, so redefine it
 if "%PYTHON%"=="" (
     set PYTHON=python
 ) else (
     set "PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%"
     set PYTHON=python
 )
+
 set PIP=pip
 set PIPENV=pipenv
 set PIPRUN=%PIPENV% run
 set PIPINST=%PIPENV% --bare install --dev --skip-lock
 set BROWSER=%PYTHON% -c %BROWSER_PYSCRIPT%
-set
+
 if "%1" == "help" (
     %PYTHON% -c "%PRINT_HELP_PYSCRIPT%" < %~f0
     goto :end
@@ -73,7 +72,7 @@ if "%1" == "lint" (
  
 if "%1" == "test" (
     @echo on
-    %PIPRUN% python -m pytest
+    %PIPRUN% %PYTHON% -m pytest
     @echo off
     goto :end
 )
@@ -87,7 +86,7 @@ if "%1" == "test-all" (
 
 if "%1" == "test-install" (
     @echo on
-    %PYTHON% -m %PIP% install --upgrade pip pipenv
+    %PYTHON% -m %PIP% install --upgrade %PIP% %PIPENV% python-coveralls
     %PIPINST%
     @echo off
     goto :end
@@ -95,14 +94,14 @@ if "%1" == "test-install" (
 
 if "%1" == "coverage" (
     @echo on
-    %PIPRUN% python -m pytest --cov=hookmeup
+    %PIPRUN% %PYTHON% -m pytest --cov=hookmeup
     @echo off
     goto :end
 )
 
 if "%1" == "coverage-html" (
     @echo on
-    %PIPRUN% python -m pytest --cov=hookmeup
+    %PIPRUN% %PYTHON% -m pytest --cov=hookmeup
     %PIPRUN% coverage html
     %BROWSER% htmlcov\index.html
     @echo off
@@ -135,7 +134,7 @@ if "%1" == "install" (
 
 if "%1" == "run" (
     @echo on
-    %PIPRUN% python -m hookmeup %cmd%
+    %PIPRUN% %PYTHON% -m hookmeup %cmd%
     @echo off
     goto :end
 )
@@ -164,7 +163,7 @@ del /S *.pyc
 del /S *.pyo
 del /S *~
 del /S __pycache__
-%PIPRUN% pip uninstall -y hookmeup
+%PIPRUN% %PIP% uninstall -y hookmeup
 @echo off
 exit /B 0
 
@@ -174,7 +173,7 @@ del .coverage
 rmdir /S /Q htmlcov
 rmdir /S /Q .pytest_cache
 rmdir /S /Q .tox
-@echo on
+@echo off
 exit /B 0
 
 :end

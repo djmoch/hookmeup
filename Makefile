@@ -24,6 +24,7 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
+FLIT := flit
 PYTHON := python
 PIP := pip
 BROWSER := $(PYTHON) -c "$$BROWSER_PYSCRIPT"
@@ -48,7 +49,7 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
-	$(PIPRUN) pip uninstall -y hookmeup
+	$(PIPRUN) $(PIP) uninstall -y hookmeup
 
 clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
@@ -66,7 +67,7 @@ test-all: ## run tests on every Python version with tox
 	$(PIPRUN) tox
 
 test-install: ## install dependenices from Pipfile (for tox / CI builds)
-	$(PYTHON) -m $(PIP) install --upgrade pip pipenv
+	$(PYTHON) -m $(PIP) install --upgrade $(PIP) $(PIPENV) python-coveralls
 	$(PIPINST)
 
 coverage: ## check code coverage quickly with the default Python
@@ -77,14 +78,14 @@ coverage-html: coverage ## generate an HTML report and open in browser
 	$(BROWSER) htmlcov/index.html
 
 release: dist ## package and upload a release
-	$(PIPRUN) flit publish
+	$(PIPRUN) $(FLIT) publish
 
 dist: ## builds source and wheel package
-	$(PIPRUN) flit build
+	$(PIPRUN) $(FLIT) build
 	ls -l dist
 
 install: ## install the package to the active Python's site-packages
-	$(PIPRUN) flit install --deps=none
+	$(PIPRUN) $(FLIT) install --deps=none
 
 run: ## run the package from site-packages
 	$(PIPRUN) $(PYTHON) -m hookmeup $(cmd)
