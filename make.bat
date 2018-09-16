@@ -9,7 +9,7 @@ except:^
 
 	from urllib.request import pathname2url^
 
-webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
+webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))^
 
 set PRINT_HELP_PYSCRIPT=import re, sys^
 
@@ -21,7 +21,7 @@ for line in sys.stdin:^
 
 		target, help = match.groups()^
 
-		print("%-20s %s" % (target, help))
+		print("%-20s %s" % (target, help))^
 
 if "%PYTHON%"=="" (
     set PYTHON=python
