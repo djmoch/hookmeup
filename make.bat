@@ -9,8 +9,7 @@ except:^
 
 	from urllib.request import pathname2url^
 
-webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))^
-
+webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
 set PRINT_HELP_PYSCRIPT=import re, sys^
 
 for line in sys.stdin:^
@@ -21,7 +20,7 @@ for line in sys.stdin:^
 
 		target, help = match.groups()^
 
-		print("%-20s %s" % (target, help))^
+		print("%-20s %s" % (target, help))
 
 if "%PYTHON%"=="" (
     set PYTHON=python
@@ -35,7 +34,7 @@ set PIPENV=pipenv
 set PIPRUN=%PIPENV% run
 set PIPINST=%PIPENV% --bare install --dev --skip-lock
 set BROWSER=%PYTHON% -c %BROWSER_PYSCRIPT%
-
+set
 if "%1" == "help" (
     %PYTHON% -c "%PRINT_HELP_PYSCRIPT%" < %~f0
     goto :end
