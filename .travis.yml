@@ -23,6 +23,9 @@ jobs:
   include:
     - stage: test
       script: make test
+      python: 2.7
+    - stage: test
+      script: make test
       python: 3.4
     - stage: test
       script: make test

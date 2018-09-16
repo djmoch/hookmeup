@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Tests for hookmeup package."""
+from __future__ import print_function
 import os
 import subprocess
 from subprocess import CalledProcessError

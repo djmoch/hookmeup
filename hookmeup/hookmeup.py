@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """hookmeup module."""
+from __future__ import print_function
 import os
 import subprocess
 from subprocess import CalledProcessError

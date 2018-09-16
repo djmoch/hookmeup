@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """A Git hook to automate your Pipenv and Django workflows"""
+from __future__ import print_function
 import argparse
 from argparse import Namespace
 

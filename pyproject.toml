@@ -13,9 +13,9 @@ classifiers = ["License :: OSI Approved :: MIT License",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
     "Topic :: Software Development :: Version Control :: Git"]
-requires-python=">=3"
+requires-python=">=2.7"
 
 [tool.flit.metadata.requires-extra]
 dev = ['pipenv']
