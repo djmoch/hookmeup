@@ -1,6 +1,6 @@
 # Hook Me Up
 
-![GitHub](https://img.shields.io/github/license/djmoch/hookmeup.svg)
+[![PyPI - License](https://img.shields.io/pypi/l/hookmeup.svg)](https://pypi.org/project/hookmeup/)
 [![Travis (.com)](https://img.shields.io/travis/com/djmoch/hookmeup.svg?logo=travis)](https://travis-ci.com/djmoch/hookmeup)
 [![AppVeyor](https://img.shields.io/appveyor/ci/djmoch/hookmeup.svg?logo=appveyor)](https://ci.appveyor.com/project/djmoch/hookmeup)
 [![PyPI](https://img.shields.io/pypi/v/hookmeup.svg)](https://pypi.org/project/hookmeup/)
@@ -10,7 +10,7 @@ A Git hook to automate your Pipenv and Django workflows
 
 ## Requirements
 
-- Python 3
+- Python 2.7+
 
 ## Features
 

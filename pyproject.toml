@@ -9,7 +9,7 @@ author-email = "daniel@danielmoch.com"
 home-page = "https://github.com/djmoch/hookmeup"
 description-file = "README.md"
 classifiers = ["License :: OSI Approved :: MIT License",
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
