@@ -78,7 +78,7 @@ coverage-html: coverage ## generate an HTML report and open in browser
 	$(BROWSER) htmlcov/index.html
 
 release: dist ## package and upload a release
-	$(PIPRUN) $(FLIT) publish
+	twine upload -s dist/*
 
 dist: ## builds source and wheel package
 	$(PIPRUN) $(FLIT) build
