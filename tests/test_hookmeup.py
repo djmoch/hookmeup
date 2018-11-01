@@ -5,6 +5,7 @@ from __future__ import print_function
 import os
 import subprocess
 from subprocess import CalledProcessError
+import sys
 
 import pytest
 import hookmeup
@@ -27,6 +28,7 @@ def test_install(mock_install, mocker):
             'os.path.exists',
             new=mocker.MagicMock(return_value=False)
             )
+    mocker.patch.object(sys, 'argv', ['hookmeup', 'install'])
     hookmeup.hookmeup.install({})
     mock_file.assert_called_once_with(
             os.path.sep.join(['.git', 'hooks', 'post-checkout']),
@@ -34,6 +36,31 @@ def test_install(mock_install, mocker):
             )
     mock_file().write.assert_called_once_with(
             '#!/bin/sh\nhookmeup post-checkout "$@"\n'
+            )
+    os.path.exists.assert_called_once_with(
+            os.path.sep.join(['.git', 'hooks', 'post-checkout'])
+            )
+
+def test_install_exotic_argv0(mock_install, mocker):
+    """Test install with an exotic sys.argv[0] value"""
+    mock_file = mocker.mock_open()
+    mocker.patch('hookmeup.hookmeup.open', mock_file)
+    mocker.patch(
+            'os.path.exists',
+            new=mocker.MagicMock(return_value=False)
+            )
+    mocker.patch.object(
+            hookmeup.hookmeup.sys,
+            'argv',
+            ['hookmeup3', 'install']
+            )
+    hookmeup.hookmeup.install({})
+    mock_file.assert_called_once_with(
+            os.path.sep.join(['.git', 'hooks', 'post-checkout']),
+            'w'
+            )
+    mock_file().write.assert_called_once_with(
+            '#!/bin/sh\nhookmeup3 post-checkout "$@"\n'
             )
     os.path.exists.assert_called_once_with(
             os.path.sep.join(['.git', 'hooks', 'post-checkout'])
@@ -75,13 +102,16 @@ def test_install_already_installed(mock_install, mocker):
             read_data='#!/bin/sh\nhookmeup post-checkout\n'
             )
     mocker.patch('hookmeup.hookmeup.open', mock_file)
+    mocker.patch.object(sys, 'argv', ['hookmeup', 'install'])
     mocker.patch(
             'os.path.exists',
             new=mocker.MagicMock(return_value=True)
             )
     mocker.patch('hookmeup.hookmeup.print')
     hookmeup.hookmeup.install({})
-    hookmeup.hookmeup.print.assert_called_once()
+    hookmeup.hookmeup.print.assert_called_once_with(
+            'hookmeup: already installed'
+            )
 
 def test_error():
     """Test accessing error members"""
@@ -246,6 +276,7 @@ def test_remove(mocker):
             'os.path.exists',
             new=mocker.MagicMock(return_value=True)
             )
+    mocker.patch.object(sys, 'argv', ['hookmeup', 'remove'])
     mock_file = mocker.mock_open(
             read_data='#!/bin/sh\nfoo\nhookmeup post-checkout "$@"'
             )

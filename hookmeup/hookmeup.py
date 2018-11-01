@@ -4,6 +4,7 @@ from __future__ import print_function
 import os
 import subprocess
 from subprocess import CalledProcessError
+import sys
 
 FORMAT_STRING = 'hookmeup: {}'
 
@@ -133,6 +134,8 @@ def install(args):
                 "Argument passed to 'install', but expected none"
                 )
 
+    exec_name = sys.argv[0]
+
     stdout = _call_checked_subprocess(
             ['git', 'rev-parse', '--git-dir'],
             'Not in a Git repository'
@@ -146,18 +149,22 @@ def install(args):
 
     if os.path.exists(hook_path):
         with open(hook_path, 'r') as hook_file:
-            already_installed = 'hookmeup' in hook_file.read()
+            already_installed = exec_name in hook_file.read()
 
         if already_installed:
             _print_msg('already installed')
         else:
             _print_msg('installing to existing hook')
             with open(hook_path, 'a') as hook_file:
-                hook_file.write('hookmeup post-checkout "$@"\n')
+                hook_file.write(
+                        '{} post-checkout "$@"\n'.format(exec_name)
+                        )
     else:
         _print_msg('creating hook')
         with open(hook_path, 'w') as hook_file:
-            hook_file.write('#!/bin/sh\nhookmeup post-checkout "$@"\n')
+            hook_file.write(
+                    '#!/bin/sh\n{} post-checkout "$@"\n'.format(exec_name)
+                    )
 
 def remove(args):
     """Remove the hook from the repository"""
@@ -165,6 +172,8 @@ def remove(args):
         raise HookMeUpError(
                 "Argument passed to 'remove', but expected none"
                 )
+
+    exec_name = sys.argv[0]
 
     stdout = _call_checked_subprocess(
             ['git', 'rev-parse', '--git-dir'],
@@ -180,14 +189,14 @@ def remove(args):
     if os.path.exists(hook_path):
         with open(hook_path, 'r') as hook_file:
             hook_lines = hook_file.read()
-            installed = 'hookmeup' in hook_lines
+            installed = exec_name in hook_lines
             hook_lines = hook_lines.splitlines()
 
         if installed:
             hook_lines = \
                 ['{}\n'.format(line)
                  for line in hook_lines
-                 if line.find('hookmeup') == -1]
+                 if line.find(exec_name) == -1]
             with open(hook_path, 'w') as hook_file:
                 hook_file.writelines(hook_lines)
         else:
