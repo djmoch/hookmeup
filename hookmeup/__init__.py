@@ -9,7 +9,7 @@ from . import hookmeup
 from .hookmeup import HookMeUpError
 
 __author__ = 'Daniel Moch'
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 def main():
     """Main hookmeup entrypoint"""
