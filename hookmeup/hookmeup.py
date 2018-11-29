@@ -129,7 +129,7 @@ def post_checkout(args):
 
 def install(args):
     """Install hook into repository"""
-    if len(args) is not 0:
+    if args:
         raise HookMeUpError(
                 "Argument passed to 'install', but expected none"
                 )
@@ -168,7 +168,7 @@ def install(args):
 
 def remove(args):
     """Remove the hook from the repository"""
-    if len(args) is not 0:
+    if args:
         raise HookMeUpError(
                 "Argument passed to 'remove', but expected none"
                 )
