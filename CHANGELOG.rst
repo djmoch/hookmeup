@@ -14,6 +14,8 @@ Added
 
 - ``CHANGELOG.rst``
 
+- Contributing and Releases sections added to README
+
 Changed
 ~~~~~~~
 

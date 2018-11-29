@@ -35,6 +35,29 @@ $ hookmeup install
 
 More details are available by running `hookmeup --help`.
 
+## Contributing
+
+Pull requests are welcome, preferably via emailed output of `git
+request-pull` sent to the maintainer (see
+[here](https://www.git-scm.com/docs/git-request-pull) for more
+information).  Bug reports should also be directed to the maintainer via
+email.
+
+## Releases
+
+Release tags will always be signed with the maintainer's [PGP
+key](https://www.danielmoch.com/static/gpg.asc) (also available on any
+public
+[keyserver](https://pgp.mit.edu/pks/lookup?op=get&search=0x323C9F1784BDDD43)).
+PGP-signed versions of release tarballs and pre-built
+[wheel](https://pythonwheels.com/) packages are available on
+[PyPI](https://pypi.org/project/hookmeup/), with the signature files
+living alongside the corresponding artifact (simply append an `.asc`
+extension). Because the maintainers of PyPI do not consider PGP
+signatures to be a user-facing feature, the extension must be added
+manually in your browser's URL bar in order to download the signature
+files.
+
 ## Acknowledgments
 
 hookmeup is inspired by Tim Pope's
