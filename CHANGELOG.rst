@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog`_ , and this project adheres to
 `Semantic Versioning`_.
 
-Unreleased_
+v1.0.4_ – 2018-12-01
 -----------
 
 Added
@@ -21,6 +21,15 @@ Changed
 
 - References to Github repo changed to point to git.danielmoch.com
   (Github is now a mirror only)
+
+- Project homepage in ``pyproject.toml`` likewise updated
+
+- Everything else necessary to host the project from git.danielmoch.com
+
+Removed
+~~~~~~~
+
+- ``appveyor.yml`` and ``.travis.yml``
 
 v1.0.3_ – 2018-10-31
 --------------------
@@ -98,6 +107,7 @@ Added
 .. _Keep a Changelog: https://keepachangelog.com/en/1.0.0/
 .. _Semantic Versioning: https://semver.org/spec/v2.0.0.html
 .. _Unreleased: https://git.danielmoch.com/hookmeup.git/diff/?id=master&id2=v1.0.3
+.. _v1.0.4: https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.4&id2=v1.0.3
 .. _v1.0.3: https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.3&id2=v1.0.2
 .. _v1.0.2: https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.2&id2=v1.0.1
 .. _v1.0.1: https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.1&id2=v1.0.0
