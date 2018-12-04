@@ -1,0 +1,83 @@
+Changelog
+=========
+
+All notable changes to this project will be documented in this file.
+
+The format is based on Keep a Changelog [1], and this project adheres to
+Semantic Versioning [2].
+
+Unreleased [3]
+----------
+
+v1.0.4 – 2018-12-01 [4]
+-------------------
+Added
+- CHANGELOG.rst
+- Contributing and Releases sections added to README
+
+Changed
+- References to Github repo changed to point to git.danielmoch.com
+  (Github is now a mirror only)
+- Project homepage in pyproject.toml likewise updated
+- Everything else necessary to host the project from git.danielmoch.com
+
+Removed
+- appveyor.yml and .travis.yml
+
+v1.0.3 – 2018-10-31 [5]
+-------------------
+Added
+- Dynamic executable name detection
+
+v1.0.2 – 2018-10-31 [6]
+-------------------
+Added
+- PGP signatures to live alongside source and wheel artifacts on PyPI
+
+v1.0.1 – 2018-09-17 [7]
+-------------------
+Changed
+- PyPI documentation and metadata
+
+v1.0.0 – 2018-09-16 [8]
+-------------------
+Added
+- 1.0 maturity level for CLI API
+
+v0.2.0 – 2018-09-01 [9]
+-------------------
+Added
+- Support for all versions of Python 3
+- CI tests back to Python 3.4
+
+v0.1.2 – 2018-08-30 [10]
+-------------------
+Added
+- Support for Windows (including CI)
+
+Changed
+- Fix Pipenv checking so that pipenv sync is run if either
+  Pipfile or Pipfile.lock has changed
+
+v0.1.1 – 2018-08-29 [11]
+-------------------
+Changed
+- Treat branch_checkout parameter in post-checkout parser as an
+  integer instead of a string
+
+v0.1.0 - 2018-08-25
+-------------------
+Added
+- Initial beta release
+
+[1]  - https://keepachangelog.com/en/1.0.0/
+[2]  - https://semver.org/spec/v2.0.0.html
+[3]  - https://git.danielmoch.com/hookmeup.git/diff/?id=master&id2=v1.0.4
+[4]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.4&id2=v1.0.3
+[5]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.3&id2=v1.0.2
+[6]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.2&id2=v1.0.1
+[7]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.1&id2=v1.0.0
+[8]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.0&id2=v0.2.0
+[9]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v0.2.0&id2=v0.1.2
+[10] - https://git.danielmoch.com/hookmeup.git/diff/?id=v0.1.2&id2=v0.1.1
+[11] - https://git.danielmoch.com/hookmeup.git/diff/?id=v0.1.1&id2=v0.1.0
