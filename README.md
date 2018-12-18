@@ -1,7 +1,7 @@
 # Hook Me Up
 
 [![PyPI - License](https://img.shields.io/pypi/l/hookmeup.svg)](https://pypi.org/project/hookmeup/)
-[![Build Status](https://builds.danielmoch.com/badges/hookmeup.svg?left_text=build)](https://builds.danielmoch.com/#/builders/hookmeup)
+[![Build Status](https://builds.danielmoch.com/badges/hookmeup.svg)](https://builds.danielmoch.com/#/builders/hookmeup)
 [![AppVeyor](https://img.shields.io/appveyor/ci/djmoch/hookmeup.svg?logo=appveyor)](https://ci.appveyor.com/project/djmoch/hookmeup)
 [![PyPI](https://img.shields.io/pypi/v/hookmeup.svg)](https://pypi.org/project/hookmeup/)
 
