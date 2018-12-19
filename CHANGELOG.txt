@@ -72,12 +72,12 @@ Added
 
 [1]  - https://keepachangelog.com/en/1.0.0/
 [2]  - https://semver.org/spec/v2.0.0.html
-[3]  - https://git.danielmoch.com/hookmeup.git/diff/?id=master&id2=v1.0.4
-[4]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.4&id2=v1.0.3
-[5]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.3&id2=v1.0.2
-[6]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.2&id2=v1.0.1
-[7]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.1&id2=v1.0.0
-[8]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v1.0.0&id2=v0.2.0
-[9]  - https://git.danielmoch.com/hookmeup.git/diff/?id=v0.2.0&id2=v0.1.2
-[10] - https://git.danielmoch.com/hookmeup.git/diff/?id=v0.1.2&id2=v0.1.1
-[11] - https://git.danielmoch.com/hookmeup.git/diff/?id=v0.1.1&id2=v0.1.0
+[3]  - https://git.danielmoch.com/hookmeup/diff/?id=master&id2=v1.0.4
+[4]  - https://git.danielmoch.com/hookmeup/diff/?id=v1.0.4&id2=v1.0.3
+[5]  - https://git.danielmoch.com/hookmeup/diff/?id=v1.0.3&id2=v1.0.2
+[6]  - https://git.danielmoch.com/hookmeup/diff/?id=v1.0.2&id2=v1.0.1
+[7]  - https://git.danielmoch.com/hookmeup/diff/?id=v1.0.1&id2=v1.0.0
+[8]  - https://git.danielmoch.com/hookmeup/diff/?id=v1.0.0&id2=v0.2.0
+[9]  - https://git.danielmoch.com/hookmeup/diff/?id=v0.2.0&id2=v0.1.2
+[10] - https://git.danielmoch.com/hookmeup/diff/?id=v0.1.2&id2=v0.1.1
+[11] - https://git.danielmoch.com/hookmeup/diff/?id=v0.1.1&id2=v0.1.0
